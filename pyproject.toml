@@ -29,3 +29,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/cmgoffena13/etl-watcher-sdk"
 Documentation = ""
+
+[tool.uv.build-backend]
+source-exclude = [".env", "src/tests/**"]
+wheel-exclude = [".env", "src/tests/**"]
