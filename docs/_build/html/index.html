@@ -9,6 +9,7 @@
   <title>Welcome to Watcher SDK’s documentation! &mdash; Watcher SDK 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -16,9 +17,11 @@
       <script src="_static/documentation_options.js?v=01f34227"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/tabs.js?v=3030b3cb"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start Guide" href="getting_started/quick_start.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,11 +43,43 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to Watcher SDK’s documentation!</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quick_start.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting_started/quick_start.html#store-pipeline-and-address-lineage-configuration">Store Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started/quick_start.html#sync-pipeline-and-address-lineage-configuration">Sync Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started/quick_start.html#track-pipeline-execution">Track Pipeline Execution</a></li>
 </ul>
-</div>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/address_management.html">Address Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/address_management.html#address-lineage-configuration">Address Lineage Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/address_management.html#loading-address-lineage">Loading Address Lineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/executions.html">Execution Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#logging-executions">Logging Executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#etl-metrics">ETL Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#execution-results">Execution Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#watcher-execution-context">Watcher Execution Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#hiearchical-executions">Hiearchical Executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/watermark_management.html">Watermark Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/watermark_management.html#incrementing-watermarks">Incrementing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/watermark_management.html#accessing-watermarks">Accessing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/watermark_management.html#watermark-data-type">Watermark Data Type</a></li>
+</ul>
+</li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -73,13 +108,65 @@
 <h1>Welcome to Watcher SDK’s documentation!<a class="headerlink" href="#welcome-to-watcher-sdk-s-documentation" title="Link to this heading"></a></h1>
 <a class="logo-responsive reference internal image-reference" href="_images/watcher.jpg"><img alt="Watcher Logo" class="logo-responsive align-center" src="_images/watcher.jpg" style="width: 100%;" />
 </a>
-<p>BETA</p>
+<p>The Watcher SDK is a Python library for interacting with the Watcher framework.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>You can install the Watcher SDK using your preferred package manager:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">pip</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">uv</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">poetry</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>etl-watcher-sdk
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>add<span class="w"> </span>etl-watcher-sdk
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>add<span class="w"> </span>etl-watcher-sdk
+</pre></div>
+</div>
+</div></div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quick_start.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/address_management.html">Address Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/address_management.html#address-lineage-configuration">Address Lineage Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/address_management.html#loading-address-lineage">Loading Address Lineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/executions.html">Execution Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#logging-executions">Logging Executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#etl-metrics">ETL Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#execution-results">Execution Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#watcher-execution-context">Watcher Execution Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#hiearchical-executions">Hiearchical Executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/executions.html#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/watermark_management.html">Watermark Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/watermark_management.html#incrementing-watermarks">Incrementing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/watermark_management.html#accessing-watermarks">Accessing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/watermark_management.html#watermark-data-type">Watermark Data Type</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started/quick_start.html" class="btn btn-neutral float-right" title="Quick Start Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

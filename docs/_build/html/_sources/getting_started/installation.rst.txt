@@ -1,0 +1,27 @@
+Installation
+============
+
+You can install the Watcher SDK using your preferred package manager:
+
+.. tabs::
+
+   .. tab:: pip
+
+      .. code-block:: bash
+
+         pip install etl-watcher-sdk
+
+   .. tab:: uv
+
+      .. code-block:: bash
+
+         uv add etl-watcher-sdk
+
+   .. tab:: poetry
+
+      .. code-block:: bash
+
+         poetry add etl-watcher-sdk
+
+Usage
+------
