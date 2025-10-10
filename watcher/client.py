@@ -61,6 +61,7 @@ class Watcher:
                 address_lineage=config.address_lineage,
                 watermark=None,
                 active=False,
+                id=pipeline_endpoint_response.id,
             )
 
         if pipeline_endpoint_response.watermark is None:
@@ -80,6 +81,7 @@ class Watcher:
             address_lineage_response.raise_for_status()
 
         return SyncedPipelineConfig(
+            id=pipeline_endpoint_response.id,
             pipeline=config.pipeline,
             address_lineage=config.address_lineage,
             watermark=watermark,
@@ -165,9 +167,7 @@ class Watcher:
                     )
                     end_response.raise_for_status()
 
-                    return WatcherExecutionContext(
-                        execution_id=execution_id, metrics=result
-                    )
+                    return ExecutionResult(execution_id=execution_id, metrics=result)
 
                 except Exception as e:
                     error_payload = _EndPipelineExecutionInput(

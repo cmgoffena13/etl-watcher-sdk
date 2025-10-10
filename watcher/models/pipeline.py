@@ -1,4 +1,6 @@
-from pydantic import BaseModel, Field, Optional, Union
+from typing import Optional, Union
+
+from pydantic import BaseModel, Field
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 from watcher.models.address_lineage import AddressLineage
@@ -33,5 +35,6 @@ class PipelineConfig(BaseModel):
 
 
 class SyncedPipelineConfig(PipelineConfig):
+    id: int
     watermark: Optional[Union[str, int, DateTime, Date]] = None
     active: bool

@@ -1,6 +1,6 @@
-from typing import Union
+from typing import Optional, Union
 
-from pydantic import BaseModel, Field, Optional
+from pydantic import BaseModel, Field
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 
