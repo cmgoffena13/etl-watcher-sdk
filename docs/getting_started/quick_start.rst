@@ -79,7 +79,7 @@ This ensures your code is the source of truth for the pipeline and address linea
 
 .. code-block:: python
 
-   from watcher.client import Watcher
+   from watcher import Watcher
    from watcher.models.pipeline import PipelineConfig
 
    watcher = Watcher("https://api.watcher.example.com")

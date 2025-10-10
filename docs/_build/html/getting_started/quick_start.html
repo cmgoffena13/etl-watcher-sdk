@@ -166,7 +166,7 @@ This ensures your code is the source of truth for the pipeline and address linea
 <p class="admonition-title">Warning</p>
 <p>This will overwrite the pipeline and address lineage configuration in the Watcher framework.</p>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
