@@ -1,5 +1,7 @@
 # Watcher SDK
 
+## QuickStart
+
 ### Installation
 
 You can install the Watcher SDK, `etl-watcher-sdk`, using your preferred package manager.
