@@ -112,7 +112,7 @@
 This will log the execution to the Watcher framework and return the execution id.
 This execution id can be used to track the execution and retrieve the metrics.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code> decorator requires the pipeline id and active status as arguments.
-You can also pass in the parent execution id, watermark, and next watermark as arguments to be logged.</p>
+You can also pass in the <code class="docutils literal notranslate"><span class="pre">parent_execution_id</span></code>, <code class="docutils literal notranslate"><span class="pre">watermark</span></code>, and <code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> as arguments to be logged.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.execution</span><span class="w"> </span><span class="kn">import</span> <span class="n">WatcherExecutionContext</span>
 

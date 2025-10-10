@@ -11,7 +11,7 @@ This will log the execution to the Watcher framework and return the execution id
 This execution id can be used to track the execution and retrieve the metrics.
 
 The ``track_pipeline_execution`` decorator requires the pipeline id and active status as arguments. 
-You can also pass in the parent execution id, watermark, and next watermark as arguments to be logged.
+You can also pass in the ``parent_execution_id``, ``watermark``, and ``next_watermark`` as arguments to be logged.
 
 .. code-block:: python
 
