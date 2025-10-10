@@ -10,7 +10,8 @@ test:
 	uv run -- pytest -vv --tb=short
 
 build:
-	uv run -- uv-build
+	rm -rf dist/ build/ *.egg-info/
+	uv build
 
 upload-to-test:
 	uv run -- twine upload --respository testpypi dist/*
