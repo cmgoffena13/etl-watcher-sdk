@@ -46,6 +46,6 @@ build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-name = "watcher"
-module-root = ""
-source-exclude = ["watcher/tests/**", "__pycache__"]
-wheel-exclude = ["watcher/tests/**", "__pycache__"]
+module-root = "src"
+source-exclude = ["src/watcher/tests/**", "__pycache__"]
+wheel-exclude = ["src/watcher/tests/**", "__pycache__"]

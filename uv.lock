@@ -226,45 +226,54 @@ wheels = [
 [[package]]
 name = "etl-watcher-sdk"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
-    { name = "docutils" },
     { name = "httpx" },
-    { name = "myst-parser" },
-    { name = "pre-commit" },
     { name = "pydantic" },
     { name = "pydantic-extra-types", extra = ["pendulum"] },
+]
+
+[package.optional-dependencies]
+build = [
+    { name = "twine" },
+    { name = "uv-build" },
+]
+dev = [
+    { name = "pre-commit" },
     { name = "pytest" },
     { name = "ruff" },
+]
+docs = [
+    { name = "docutils" },
+    { name = "myst-parser" },
     { name = "sphinx" },
     { name = "sphinx-autobuild" },
     { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-rtd-theme" },
     { name = "sphinx-tabs" },
     { name = "sphinxcontrib-httpdomain" },
-    { name = "twine" },
-    { name = "uv-build" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "docutils", specifier = ">=0.21.2" },
+    { name = "docutils", marker = "extra == 'docs'", specifier = ">=0.21.2" },
     { name = "httpx", specifier = ">=0.28.1" },
-    { name = "myst-parser", specifier = ">=4.0.1" },
-    { name = "pre-commit", specifier = ">=4.3.0" },
+    { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=4.0.1" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.3.0" },
     { name = "pydantic", specifier = ">=2.12.0" },
     { name = "pydantic-extra-types", extras = ["pendulum"], specifier = ">=2.10.6" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "ruff", specifier = ">=0.14.0" },
-    { name = "sphinx", specifier = ">=8.2.3" },
-    { name = "sphinx-autobuild", specifier = ">=2025.8.25" },
-    { name = "sphinx-autodoc-typehints", specifier = ">=3.3.0" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
-    { name = "sphinx-tabs", specifier = ">=3.4.7" },
-    { name = "sphinxcontrib-httpdomain", specifier = ">=1.8.1" },
-    { name = "twine", specifier = ">=6.2.0" },
-    { name = "uv-build", specifier = ">=0.9.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.4.2" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.0" },
+    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=8.2.3" },
+    { name = "sphinx-autobuild", marker = "extra == 'docs'", specifier = ">=2025.8.25" },
+    { name = "sphinx-autodoc-typehints", marker = "extra == 'docs'", specifier = ">=3.3.0" },
+    { name = "sphinx-rtd-theme", marker = "extra == 'docs'", specifier = ">=3.0.2" },
+    { name = "sphinx-tabs", marker = "extra == 'docs'", specifier = ">=3.4.7" },
+    { name = "sphinxcontrib-httpdomain", marker = "extra == 'docs'", specifier = ">=1.8.1" },
+    { name = "twine", marker = "extra == 'build'", specifier = ">=6.2.0" },
+    { name = "uv-build", marker = "extra == 'build'", specifier = ">=0.9.0" },
 ]
+provides-extras = ["dev", "docs", "build"]
 
 [[package]]
 name = "filelock"
