@@ -49,4 +49,12 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 - `trigger_celery_queue_check()` method for monitoring Celery queue health
 
 ## [0.1.2] - 2025-10-11
+
+### Changed
 - Renamed `ETLResults` to be singular `ETLResult`
+
+## [0.1.21] - 2025-10-11
+
+### Changed
+- Renamed `ExecutionResult.results` field to `ExecutionResult.result` for consistency
+- Made `AddressLineage` Optional in the `PipelineConfig` class

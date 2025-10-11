@@ -117,9 +117,9 @@ def test_complete_etl_workflow(
     # Verify execution was tracked
     assert result is not None
     assert hasattr(result, "execution_id")
-    assert hasattr(result, "results")
-    assert result.results.inserts == 1000
-    assert result.results.total_rows == 1200
+    assert hasattr(result, "result")
+    assert result.result.inserts == 1000
+    assert result.result.total_rows == 1200
 
     # Verify all API calls were made
     assert mock_make_request_with_retry.call_count == 4
@@ -253,6 +253,6 @@ def test_custom_metrics_workflow(mock_make_request_with_retry, watcher_client):
     # This should work with custom metrics
     result = etl_with_custom_metrics()
     assert result is not None
-    assert hasattr(result, "results")
-    assert result.results.custom_field == "hello"
-    assert result.results.processing_time == 1.5
+    assert hasattr(result, "result")
+    assert result.result.custom_field == "hello"
+    assert result.result.processing_time == 1.5

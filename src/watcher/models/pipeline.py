@@ -30,7 +30,7 @@ class _PipelineResponse(BaseModel):
 
 class PipelineConfig(BaseModel):
     pipeline: Pipeline
-    address_lineage: AddressLineage
+    address_lineage: Optional[AddressLineage] = None
     default_watermark: Optional[Union[str, int, DateTime, Date]] = None
     next_watermark: Optional[Union[str, int, DateTime, Date]] = None
 

@@ -78,6 +78,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#active-flag">Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#incrementing-watermarks">Incrementing Watermarks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#accessing-watermarks">Accessing Watermarks</a></li>
@@ -168,7 +174,7 @@
 This ensures your code is the source of truth for the pipeline and address lineage configuration.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This will overwrite the pipeline and address lineage configuration in the Watcher framework.</p>
+<p>This will overwrite the pipeline configuration and address lineage in the Watcher framework.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">PipelineConfig</span>
 

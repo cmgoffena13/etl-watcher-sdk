@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Watermark Management" href="watermark_management.html" />
+    <link rel="next" title="Monitoring" href="monitoring.html" />
     <link rel="prev" title="Address Management" href="address_management.html" /> 
 </head>
 
@@ -55,6 +55,31 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Core Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#etlresult">ETLResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watcherexecutioncontext">WatcherExecutionContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#executionresult">ExecutionResult</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#pipeline-models">Pipeline Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipelineconfig">PipelineConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#syncedpipelineconfig">SyncedPipelineConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#address-models">Address Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#address">Address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#addresslineage">AddressLineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#exception-models">Exception Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watcherapierror">WatcherAPIError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchernetworkerror">WatcherNetworkError</a></li>
+</ul>
+</li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="address_management.html">Address Management</a><ul>
@@ -74,6 +99,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hiearchical-executions">Hiearchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
@@ -139,10 +170,10 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Your ETL logic here</span>
         <span class="k">if</span> <span class="n">some_condition_fails</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Data quality issues&quot;</span><span class="p">})</span>
-        <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Data quality issues&quot;</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
+        <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
 
 <span class="c1"># Access results</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">etl_pipeline</span><span class="p">()</span>
@@ -162,7 +193,7 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
 
     <span class="c1"># Work here</span>
 
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -175,11 +206,11 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
 </section>
 <section id="custom-etl-results">
 <h2>Custom ETL Results<a class="headerlink" href="#custom-etl-results" title="Link to this heading"></a></h2>
-<p>You can extend <code class="docutils literal notranslate"><span class="pre">ETLResults</span></code> with custom fields to return additional data from your pipeline:</p>
+<p>You can extend <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code> with custom fields to return additional data from your pipeline:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResult</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">CustomETLResults</span><span class="p">(</span><span class="n">ETLResults</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomETLResult</span><span class="p">(</span><span class="n">ETLResult</span><span class="p">):</span>
     <span class="n">data_quality_score</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
@@ -189,7 +220,7 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
 
     <span class="c1"># ... do work ...</span>
 
-    <span class="k">return</span> <span class="n">CustomETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">CustomETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -198,21 +229,21 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
 
 <span class="c1"># Access custom fields</span>
 <span class="n">output</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Quality score: </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">data_quality_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Quality score: </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">data_quality_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Custom fields are only accessible in your application code. Only the standard ETLResults fields
+<p>Custom fields are only accessible in your application code. Only the standard ETLResult fields
 (completed_successfully, inserts, updates, etc.) are sent to the Watcher API.</p>
 </div>
 </section>
 <section id="etl-results">
 <h2>ETL Results<a class="headerlink" href="#etl-results" title="Link to this heading"></a></h2>
-<p>The ETLResults is a class that is required to be returned from your pipeline function
+<p>The ETLResult is a class that is required to be returned from your pipeline function
 if using the <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code> decorator.
 It contains the metrics for your pipeline that are logged to the Watcher framework.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ETLResults</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ETLResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">completed_successfully</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">inserts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">updates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -222,7 +253,7 @@ It contains the metrics for your pipeline that are logged to the Watcher framewo
 </pre></div>
 </div>
 <p>Code Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResult</span>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -232,7 +263,7 @@ It contains the metrics for your pipeline that are logged to the Watcher framewo
 
     <span class="c1"># Work here</span>
 
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -243,7 +274,7 @@ It contains the metrics for your pipeline that are logged to the Watcher framewo
 <section id="execution-results">
 <h2>Execution Results<a class="headerlink" href="#execution-results" title="Link to this heading"></a></h2>
 <p>The ExecutionResults is a class that is returned from your pipeline function. This
-wraps around the ETLResults class and adds the execution id. This is to ensure access
+wraps around the ETLResult class and adds the execution id. This is to ensure access
 to the execution id for any usage.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExecutionResult</span>
 
@@ -254,7 +285,7 @@ to the execution id for any usage.</p>
 
     <span class="c1"># Work here</span>
 
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
             <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
             <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -262,8 +293,8 @@ to the execution id for any usage.</p>
 
 <span class="n">output</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">execution_id</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">inserts</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">inserts</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -286,7 +317,7 @@ Your function must have <cite>watcher_context</cite> as a parameter if using the
     <span class="nb">print</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">next_watermark</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -319,13 +350,13 @@ You can provide child processes the parent execution id from the WatcherExecutio
 
         <span class="c1"># Work here</span>
 
-        <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
             <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
             <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -346,7 +377,7 @@ through the Watcher framework directly as the active flag is received from the W
 
     <span class="c1"># Function IS SKIPPED if active is False</span>
 
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -367,7 +398,7 @@ through the Watcher framework directly as the active flag is received from the W
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="address_management.html" class="btn btn-neutral float-left" title="Address Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="watermark_management.html" class="btn btn-neutral float-right" title="Watermark Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="monitoring.html" class="btn btn-neutral float-right" title="Monitoring" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

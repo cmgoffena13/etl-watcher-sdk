@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Execution Management" href="executions.html" /> 
+    <link rel="prev" title="Monitoring" href="monitoring.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -73,6 +73,12 @@
 <li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#hiearchical-executions">Hiearchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Watermark Management</a><ul>
@@ -185,7 +191,7 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
 <span class="s2">            AND date_column &gt;= &#39;</span><span class="si">{</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&#39;</span>
 <span class="s2">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
@@ -208,7 +214,7 @@ and to properly cast it once accessed from the WatcherExecutionContext.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="executions.html" class="btn btn-neutral float-left" title="Execution Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="monitoring.html" class="btn btn-neutral float-left" title="Monitoring" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

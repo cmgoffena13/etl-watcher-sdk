@@ -43,6 +43,12 @@ You can install the Watcher SDK using your preferred package manager:
 
 .. toctree::
    :maxdepth: 2
+   :caption: API
+
+   api/models
+
+.. toctree::
+   :maxdepth: 2
    :caption: Guides
 
    guides/address_management

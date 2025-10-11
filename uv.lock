@@ -225,7 +225,7 @@ wheels = [
 
 [[package]]
 name = "etl-watcher-sdk"
-version = "0.1.2"
+version = "0.1.21"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },

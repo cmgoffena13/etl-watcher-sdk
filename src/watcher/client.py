@@ -219,7 +219,7 @@ class Watcher:
                         json=end_payload.model_dump(mode="json", exclude_unset=True),
                     )
 
-                    return ExecutionResult(execution_id=execution_id, results=result)
+                    return ExecutionResult(execution_id=execution_id, result=result)
 
                 except Exception as e:
                     # Only catch unexpected exceptions (not ETL function logic failures)

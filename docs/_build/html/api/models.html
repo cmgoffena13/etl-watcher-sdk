@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Models &mdash; Watcher SDK 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Address Management" href="../guides/address_management.html" />
+    <link rel="prev" title="Quick Start Guide" href="../getting_started/quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Watcher SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#store-pipeline-and-address-lineage-configuration">Store Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#sync-pipeline-and-address-lineage-configuration">Sync Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#track-pipeline-execution">Track Pipeline Execution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#etlresult">ETLResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#watcherexecutioncontext">WatcherExecutionContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#executionresult">ExecutionResult</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#pipeline-models">Pipeline Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipelineconfig">PipelineConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#syncedpipelineconfig">SyncedPipelineConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#address-models">Address Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#address">Address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#addresslineage">AddressLineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#exception-models">Exception Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#watcherapierror">WatcherAPIError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#watchernetworkerror">WatcherNetworkError</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/address_management.html">Address Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_management.html#address-lineage-configuration">Address Lineage Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_management.html#loading-address-lineage">Loading Address Lineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/executions.html">Execution Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#logging-executions">Logging Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/executions.html#exception-handling">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/executions.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#custom-etl-results">Custom ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#etl-results">ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#execution-results">Execution Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#watcher-execution-context">Watcher Execution Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#hiearchical-executions">Hiearchical Executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/executions.html#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#incrementing-watermarks">Incrementing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#accessing-watermarks">Accessing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#watermark-data-type">Watermark Data Type</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Watcher SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Core Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core-models">
+<h1>Core Models<a class="headerlink" href="#core-models" title="Link to this heading"></a></h1>
+<section id="etlresult">
+<h2>ETLResult<a class="headerlink" href="#etlresult" title="Link to this heading"></a></h2>
+<p>The primary model for ETL execution results. Return this from your decorated ETL functions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ETLResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">completed_successfully</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">inserts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">updates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">soft_deletes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">total_rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">execution_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_etl_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
+    <span class="c1"># Your ETL logic here</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;partition&quot;</span><span class="p">:</span> <span class="s2">&quot;2025-01-01&quot;</span><span class="p">}</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Custom ETL Results:</strong>
+You can extend <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code> for custom data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomETLResult</span><span class="p">(</span><span class="n">ETLResult</span><span class="p">):</span>
+    <span class="n">custom_metric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="watcherexecutioncontext">
+<h2>WatcherExecutionContext<a class="headerlink" href="#watcherexecutioncontext" title="Link to this heading"></a></h2>
+<p>Context object injected into decorated ETL functions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">WatcherExecutionContext</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">execution_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_etl_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution ID: </span><span class="si">{</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">execution_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline ID: </span><span class="si">{</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">pipeline_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Use watermark for incremental processing</span>
+    <span class="k">if</span> <span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="p">:</span>
+        <span class="n">process_from_watermark</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="executionresult">
+<h2>ExecutionResult<a class="headerlink" href="#executionresult" title="Link to this heading"></a></h2>
+<p>Returned by the <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code> decorator.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExecutionResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">execution_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">ETLResult</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="pipeline-models">
+<h1>Pipeline Models<a class="headerlink" href="#pipeline-models" title="Link to this heading"></a></h1>
+<section id="pipeline">
+<h2>Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading"></a></h2>
+<p>Core pipeline definition.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pipeline_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pipeline_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">freshness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">freshness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">timeliness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">timeliness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="pipelineconfig">
+<h2>PipelineConfig<a class="headerlink" href="#pipelineconfig" title="Link to this heading"></a></h2>
+<p>Complete pipeline configuration including address lineage and watermarks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelineConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span>
+    <span class="n">address_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AddressLineage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">default_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-etl-pipeline&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;data-transformation&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">}</span>
+    <span class="p">),</span>
+    <span class="n">address_lineage</span><span class="o">=</span><span class="n">AddressLineage</span><span class="p">(</span>
+        <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span><span class="n">source_address</span><span class="p">],</span>
+        <span class="n">target_addresses</span><span class="o">=</span><span class="p">[</span><span class="n">target_address</span><span class="p">]</span>
+    <span class="p">),</span>
+    <span class="n">default_watermark</span><span class="o">=</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="s2">&quot;2025-01-02&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="syncedpipelineconfig">
+<h2>SyncedPipelineConfig<a class="headerlink" href="#syncedpipelineconfig" title="Link to this heading"></a></h2>
+<p>Pipeline configuration after syncing with the Watcher API.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SyncedPipelineConfig</span><span class="p">(</span><span class="n">PipelineConfig</span><span class="p">):</span>
+    <span class="n">pipeline</span><span class="p">:</span> <span class="n">_PipelineWithResponse</span>  <span class="c1"># Includes id and active fields</span>
+    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">synced_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline ID: </span><span class="si">{</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Active: </span><span class="si">{</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Watermark: </span><span class="si">{</span><span class="n">synced_config</span><span class="o">.</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="address-models">
+<h1>Address Models<a class="headerlink" href="#address-models" title="Link to this heading"></a></h1>
+<section id="address">
+<h2>Address<a class="headerlink" href="#address" title="Link to this heading"></a></h2>
+<p>Unified address model for both source and target addresses.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Address</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">database_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">schema_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">table_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">primary_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">source_address</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;source_db.source_schema.users&quot;</span><span class="p">,</span>
+    <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+    <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
+    <span class="n">database_name</span><span class="o">=</span><span class="s2">&quot;source_db&quot;</span><span class="p">,</span>
+    <span class="n">schema_name</span><span class="o">=</span><span class="s2">&quot;public&quot;</span><span class="p">,</span>
+    <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;users&quot;</span><span class="p">,</span>
+    <span class="n">primary_key</span><span class="o">=</span><span class="s2">&quot;user_id&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="addresslineage">
+<h2>AddressLineage<a class="headerlink" href="#addresslineage" title="Link to this heading"></a></h2>
+<p>Defines the data lineage between source and target addresses.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">source_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Address</span><span class="p">]</span>
+    <span class="n">target_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Address</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lineage</span> <span class="o">=</span> <span class="n">AddressLineage</span><span class="p">(</span>
+    <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span><span class="n">source_address</span><span class="p">],</span>
+    <span class="n">target_addresses</span><span class="o">=</span><span class="p">[</span><span class="n">target_address</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="exception-models">
+<h1>Exception Models<a class="headerlink" href="#exception-models" title="Link to this heading"></a></h1>
+<section id="watcherapierror">
+<h2>WatcherAPIError<a class="headerlink" href="#watcherapierror" title="Link to this heading"></a></h2>
+<p>Raised for API-related errors with detailed context.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">WatcherAPIError</span><span class="p">(</span><span class="n">WatcherError</span><span class="p">):</span>
+    <span class="n">status_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">response_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">response_headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">error_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">error_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">WatcherAPIError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error Code: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">error_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="watchernetworkerror">
+<h2>WatcherNetworkError<a class="headerlink" href="#watchernetworkerror" title="Link to this heading"></a></h2>
+<p>Raised for network/connection errors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">WatcherNetworkError</span><span class="p">(</span><span class="n">WatcherError</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">WatcherNetworkError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Handle network issues</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../getting_started/quick_start.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../guides/address_management.html" class="btn btn-neutral float-right" title="Address Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

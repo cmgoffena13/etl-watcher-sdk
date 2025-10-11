@@ -98,7 +98,7 @@ You can extend ``ETLResult`` with custom fields to return additional data from y
 
     # Access custom fields
     output = my_pipeline()
-    print(f"Quality score: {output.results.data_quality_score}")
+    print(f"Quality score: {output.result.data_quality_score}")
 
 .. note::
    Custom fields are only accessible in your application code. Only the standard ETLResult fields 
@@ -167,8 +167,8 @@ to the execution id for any usage.
 
     output = my_pipeline()
     print(output.execution_id)
-    print(output.results)
-    print(output.results.inserts)
+    print(output.result)
+    print(output.result.inserts)
 
 Watcher Execution Context
 -----------------

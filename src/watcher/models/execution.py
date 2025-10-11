@@ -33,4 +33,4 @@ class WatcherExecutionContext(BaseModel):
 
 class ExecutionResult(BaseModel):
     execution_id: int
-    results: ETLResult
+    result: ETLResult

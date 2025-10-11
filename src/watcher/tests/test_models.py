@@ -118,11 +118,11 @@ def test_execution_context_validation():
 def test_execution_result_creation():
     """Test ExecutionResult creation."""
     metrics = ETLResult(completed_successfully=True, inserts=100, total_rows=100)
-    result = ExecutionResult(execution_id=123, results=metrics)
+    result = ExecutionResult(execution_id=123, result=metrics)
 
     assert result.execution_id == 123
-    assert result.results == metrics
-    assert result.results.inserts == 100
+    assert result.result == metrics
+    assert result.result.inserts == 100
 
 
 def test_pipeline_creation():
