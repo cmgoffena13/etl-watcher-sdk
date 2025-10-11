@@ -197,8 +197,8 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
     <span class="p">)</span>
 
 <span class="c1"># Access custom fields</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Quality score: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">data_quality_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Quality score: </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">data_quality_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -260,17 +260,11 @@ to the execution id for any usage.</p>
             <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="p">)</span>
 
-<span class="n">results</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">execution_id</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">inserts</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">execution_id</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">inserts</span><span class="p">)</span>
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can create another Pydantic model that inherits from ETLResults
-and return that instead of ETLResults. Those fields will be accessible in
-the ExecutionResults class that is returned from your pipeline function.</p>
 </div>
 </section>
 <section id="watcher-execution-context">

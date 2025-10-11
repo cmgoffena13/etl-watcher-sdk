@@ -97,8 +97,8 @@ You can extend ``ETLResults`` with custom fields to return additional data from 
         )
 
     # Access custom fields
-    result = my_pipeline()
-    print(f"Quality score: {result.results.data_quality_score}")
+    output = my_pipeline()
+    print(f"Quality score: {output.results.data_quality_score}")
 
 .. note::
    Custom fields are only accessible in your application code. Only the standard ETLResults fields 
@@ -165,15 +165,10 @@ to the execution id for any usage.
                 total_rows=100,
             )
 
-    results = my_pipeline()
-    print(results.execution_id)
-    print(results.results)
-    print(results.results.inserts)
-
-.. note::
-    You can create another Pydantic model that inherits from ETLResults 
-    and return that instead of ETLResults. Those fields will be accessible in 
-    the ExecutionResults class that is returned from your pipeline function.
+    output = my_pipeline()
+    print(output.execution_id)
+    print(output.results)
+    print(output.results.inserts)
 
 Watcher Execution Context
 -----------------
