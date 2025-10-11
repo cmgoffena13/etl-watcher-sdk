@@ -1,6 +1,6 @@
 [project]
 name = "etl-watcher-sdk"
-version = "0.1.15"
+version = "0.1.16"
 description = "SDK for Watcher framework"
 readme = "README.md"
 license = "MIT"
