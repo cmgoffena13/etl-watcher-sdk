@@ -6,7 +6,7 @@ import httpx
 import pendulum
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
-from watcher.exceptions import WatcherAPIError, WatcherNetworkError, handle_http_error
+from watcher.exceptions import WatcherNetworkError, handle_http_error
 from watcher.models.address_lineage import _AddressLineagePostInput
 from watcher.models.execution import (
     ETLResults,
@@ -99,7 +99,7 @@ class Watcher:
                 **config.address_lineage.model_dump(),
             )
 
-            address_lineage_response = self._make_request(
+            self._make_request(
                 "POST",
                 "/address_lineage",
                 json=address_lineage_data.model_dump(exclude_unset=True),
@@ -239,3 +239,14 @@ class Watcher:
             return wrapper
 
         return decorator
+
+    def trigger_timeliness_check(self, lookback_minutes: int):
+        self._make_request(
+            "POST", "/timeliness", json={"lookback_minutes": lookback_minutes}
+        )
+
+    def trigger_freshness_check(self):
+        self._make_request("POST", "/freshness")
+
+    def trigger_celery_queue_check(self):
+        self._make_request("POST", "/celery/monitor-queue")
