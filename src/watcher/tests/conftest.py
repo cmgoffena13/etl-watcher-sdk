@@ -1,6 +1,6 @@
 import pytest
 
-from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.pipeline import Pipeline, PipelineConfig
 from watcher.types import DatePartEnum
 
@@ -23,8 +23,8 @@ def sample_pipeline():
 
 @pytest.fixture
 def sample_source_address():
-    """Create a sample SourceAddress for testing."""
-    return SourceAddress(
+    """Create a sample Address for testing."""
+    return Address(
         name="source_db.source_schema.source_table",
         address_type_name="postgres",
         address_type_group_name="database",
@@ -33,8 +33,8 @@ def sample_source_address():
 
 @pytest.fixture
 def sample_target_address():
-    """Create a sample TargetAddress for testing."""
-    return TargetAddress(
+    """Create a sample Address for testing."""
+    return Address(
         name="target_db.target_schema.target_table",
         address_type_name="snowflake",
         address_type_group_name="warehouse",

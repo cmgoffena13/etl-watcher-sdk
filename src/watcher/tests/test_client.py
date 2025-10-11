@@ -8,7 +8,7 @@ import httpx
 import pytest
 
 from watcher.client import Watcher
-from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import ETLMetrics, WatcherExecutionContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
@@ -30,14 +30,14 @@ def sample_pipeline_config():
         ),
         address_lineage=AddressLineage(
             source_addresses=[
-                SourceAddress(
+                Address(
                     name="source-db",
                     address_type_name="database",
                     address_type_group_name="rdbms",
                 )
             ],
             target_addresses=[
-                TargetAddress(
+                Address(
                     name="target-warehouse",
                     address_type_name="data-warehouse",
                     address_type_group_name="analytics",
@@ -288,14 +288,14 @@ def test_pipeline_config_creation():
         ),
         address_lineage=AddressLineage(
             source_addresses=[
-                SourceAddress(
+                Address(
                     name="source-db",
                     address_type_name="database",
                     address_type_group_name="rdbms",
                 )
             ],
             target_addresses=[
-                TargetAddress(
+                Address(
                     name="target-warehouse",
                     address_type_name="data-warehouse",
                     address_type_group_name="analytics",

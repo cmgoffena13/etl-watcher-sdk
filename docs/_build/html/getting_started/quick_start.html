@@ -129,8 +129,7 @@
 <section id="store-pipeline-and-address-lineage-configuration">
 <h3>Store Pipeline and Address Lineage Configuration<a class="headerlink" href="#store-pipeline-and-address-lineage-configuration" title="Link to this heading"></a></h3>
 <p>You can store your pipeline and address lineage configuration in a Python file.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.address_lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">AddressLineage</span><span class="p">,</span> <span class="n">SourceAddress</span><span class="p">,</span> <span class="n">TargetAddress</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">AddressLineage</span><span class="p">,</span> <span class="n">Address</span>
 
  <span class="n">MY_ETL_PIPELINE_CONFIG</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
      <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
@@ -140,14 +139,14 @@
      <span class="p">),</span>
      <span class="n">address_lineage</span><span class="o">=</span><span class="n">AddressLineage</span><span class="p">(</span>
          <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span>
-             <span class="n">SourceAddress</span><span class="p">(</span>
+             <span class="n">Address</span><span class="p">(</span>
                  <span class="n">name</span><span class="o">=</span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
                  <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
                  <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
              <span class="p">)</span>
          <span class="p">],</span>
          <span class="n">target_addresses</span><span class="o">=</span><span class="p">[</span>
-             <span class="n">TargetAddress</span><span class="p">(</span>
+             <span class="n">Address</span><span class="p">(</span>
                  <span class="n">name</span><span class="o">=</span><span class="s2">&quot;target_db.target_schema.target_table&quot;</span><span class="p">,</span>
                  <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
                  <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
@@ -166,8 +165,7 @@ This ensures your code is the source of truth for the pipeline and address linea
 <p class="admonition-title">Warning</p>
 <p>This will overwrite the pipeline and address lineage configuration in the Watcher framework.</p>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">PipelineConfig</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 <span class="n">synced_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">MY_ETL_PIPELINE_CONFIG</span><span class="p">)</span>
@@ -178,9 +176,7 @@ This ensures your code is the source of truth for the pipeline and address linea
 <section id="track-pipeline-execution">
 <h3>Track Pipeline Execution<a class="headerlink" href="#track-pipeline-execution" title="Link to this heading"></a></h3>
 <p>You can track and log the execution of your etl code by using the Watcher SDK.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.execution</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLMetrics</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">ETLMetrics</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 

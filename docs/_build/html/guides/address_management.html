@@ -66,7 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#etl-metrics">ETL Metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#execution-results">Execution Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="executions.html#execution-context">Execution Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#hiearchical-executions">Hiearchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#active-flag">Active Flag</a></li>
 </ul>
@@ -110,7 +110,7 @@
 <h2>Address Lineage Configuration<a class="headerlink" href="#address-lineage-configuration" title="Link to this heading"></a></h2>
 <p>The Address Lineage Configuration is an optional configuration you can add to PipelineConfig.
 This is used to store the address lineage for your pipeline.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.address_lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">AddressLineage</span><span class="p">,</span> <span class="n">SourceAddress</span><span class="p">,</span> <span class="n">TargetAddress</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">AddressLineage</span><span class="p">,</span> <span class="n">Address</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineConfig</span>
 
 <span class="n">MY_PIPELINE_CONFIG</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
     <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
@@ -118,20 +118,23 @@ This is used to store the address lineage for your pipeline.</p>
         <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
         <span class="n">default_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="s2">&quot;address_lineage&quot;</span><span class="p">:</span> <span class="n">AddressLineage</span><span class="p">(</span>
-    <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">SourceAddress</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
-            <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
-            <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="p">],</span>
-    <span class="n">target_addresses</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">TargetAddress</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;target_db.target_schema.target_table&quot;</span><span class="p">,</span>
-            <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
-            <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
+    <span class="n">address_lineage</span><span class="o">=</span><span class="n">AddressLineage</span><span class="p">(</span>
+        <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Address</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
+                <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+                <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">target_addresses</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Address</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;target_db.target_schema.target_table&quot;</span><span class="p">,</span>
+                <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
+                <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+    <span class="p">),</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -140,8 +143,7 @@ This is used to store the address lineage for your pipeline.</p>
 <p>Address Lineage is loaded automatically when the pipeline is synced if the load_lineage flag is set to True.
 The load_lineage flag is created as True upon first creation of the pipeline. After a successful execution,
 the load_lineage flag is set to False. It can be set to True again through the Watcher framework API.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">PipelineConfig</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 

@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from watcher.client import Watcher
-from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import ETLMetrics, WatcherExecutionContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
@@ -30,14 +30,14 @@ def integration_address_lineage():
     """Create address lineage for integration testing."""
     return AddressLineage(
         source_addresses=[
-            SourceAddress(
+            Address(
                 name="source-database",
                 address_type_name="database",
                 address_type_group_name="rdbms",
             )
         ],
         target_addresses=[
-            TargetAddress(
+            Address(
                 name="target-warehouse",
                 address_type_name="data-warehouse",
                 address_type_group_name="analytics",

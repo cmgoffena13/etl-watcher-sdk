@@ -15,8 +15,7 @@ You can also pass in the ``parent_execution_id``, ``watermark``, and ``next_wate
 
 .. code-block:: python
 
-    from watcher import Watcher
-    from watcher.models.execution import WatcherExecutionContext
+    from watcher import Watcher, WatcherExecutionContext
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -57,7 +56,7 @@ Code Example:
 
 .. code-block:: python
 
-    from watcher.models.execution import ETLMetrics
+    from watcher import ETLMetrics
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
@@ -81,12 +80,12 @@ to the execution id for any usage.
 
 .. code-block:: python
 
-    from watcher.models.execution import ExecutionResults
+    from watcher import ExecutionResult
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
         active=synced_config.active)
-    def my_pipeline() -> ExecutionResults:
+    def my_pipeline() -> ExecutionResult:
 
         # Work here
 
@@ -114,7 +113,7 @@ Your function must have `watcher_context` as a parameter if using the WatcherExe
 
 .. code-block:: python
 
-    from watcher.models.execution import WatcherExecutionContext
+    from watcher import WatcherExecutionContext
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
@@ -142,8 +141,7 @@ You can provide child processes the parent execution id from the WatcherExecutio
 
 .. code-block:: python
 
-    from watcher import Watcher
-    from watcher.models.execution import WatcherExecutionContext
+    from watcher import Watcher, WatcherExecutionContext
 
     watcher = Watcher("https://api.watcher.example.com")
 

@@ -14,8 +14,7 @@ You can install the Watcher SDK, `etl-watcher-sdk`, using your preferred package
 Store your pipeline and address lineage configuration in a Python file.
 
 ```python
-from watcher.models.pipeline import Pipeline, PipelineConfig
-from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+from watcher import Pipeline, PipelineConfig, AddressLineage, Address
 
 MY_ETL_PIPELINE_CONFIG = PipelineConfig(
     pipeline=Pipeline(
@@ -25,14 +24,14 @@ MY_ETL_PIPELINE_CONFIG = PipelineConfig(
     ),
     address_lineage=AddressLineage(
         source_addresses=[
-            SourceAddress(
+            Address(
                 name="source_db.source_schema.source_table",
                 address_type_name="postgres",
                 address_type_group_name="database",
             )
         ],
         target_addresses=[
-            TargetAddress(
+            Address(
                 name="target_db.target_schema.target_table",
                 address_type_name="snowflake",
                 address_type_group_name="warehouse",
@@ -48,8 +47,7 @@ Sync your pipeline and address lineage configuration to the Watcher framework.
 This ensures your code is the source of truth for the pipeline and address lineage configuration.
 
 ```python
-from watcher import Watcher
-from watcher.models.pipeline import PipelineConfig
+from watcher import Watcher, PipelineConfig
 
 watcher = Watcher("https://api.watcher.example.com")
 synced_config = watcher.sync_pipeline_config(MY_ETL_PIPELINE_CONFIG)
@@ -59,9 +57,7 @@ print(f"Pipeline synced!")
 ### Track Pipeline Execution
 
 ```python
-from watcher import Watcher
-from watcher.models.pipeline import PipelineConfig
-from watcher.models.execution import ETLMetrics
+from watcher import Watcher, PipelineConfig, ETLMetrics
 
 watcher = Watcher("https://api.watcher.example.com")
 

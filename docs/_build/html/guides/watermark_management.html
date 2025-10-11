@@ -65,7 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#etl-metrics">ETL Metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#execution-results">Execution Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="executions.html#execution-context">Execution Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#hiearchical-executions">Hiearchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#active-flag">Active Flag</a></li>
 </ul>
@@ -111,9 +111,7 @@
 <p>You can increment the watermark by providing the next watermark
 to your Pipeline Config before syncing with the Watcher framework.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.address_lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">AddressLineage</span><span class="p">,</span> <span class="n">SourceAddress</span><span class="p">,</span> <span class="n">TargetAddress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">AddressLineage</span><span class="p">,</span> <span class="n">Address</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 
@@ -125,14 +123,14 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
     <span class="p">),</span>
     <span class="n">address_lineage</span><span class="o">=</span><span class="n">AddressLineage</span><span class="p">(</span>
         <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span>
-            <span class="n">SourceAddress</span><span class="p">(</span>
+            <span class="n">Address</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
                 <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
                 <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">],</span>
         <span class="n">target_addresses</span><span class="o">=</span><span class="p">[</span>
-            <span class="n">TargetAddress</span><span class="p">(</span>
+            <span class="n">Address</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="s2">&quot;target_db.target_schema.target_table&quot;</span><span class="p">,</span>
                 <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
                 <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
@@ -156,9 +154,7 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
 <section id="accessing-watermarks">
 <h2>Accessing Watermarks<a class="headerlink" href="#accessing-watermarks" title="Link to this heading"></a></h2>
 <p>You can access the watermarks for your pipelines by using the WatcherExecutionContext.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher.models.execution</span><span class="w"> </span><span class="kn">import</span> <span class="n">WatcherExecutionContext</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 

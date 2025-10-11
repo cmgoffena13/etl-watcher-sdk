@@ -11,7 +11,7 @@ This is used to store the address lineage for your pipeline.
 
 .. code-block:: python
 
-    from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+    from watcher import AddressLineage, Address, Pipeline, PipelineConfig
 
     MY_PIPELINE_CONFIG = PipelineConfig(
         pipeline=Pipeline(
@@ -19,20 +19,23 @@ This is used to store the address lineage for your pipeline.
             pipeline_type_name="extraction",
             default_watermark="2024-01-01",
         ),
-        "address_lineage": AddressLineage(
-        source_addresses=[
-            SourceAddress(
-                name="source_db.source_schema.source_table",
-                address_type_name="postgres",
-                address_type_group_name="database",
-            )
-        ],
-        target_addresses=[
-            TargetAddress(
-                name="target_db.target_schema.target_table",
-                address_type_name="snowflake",
-                address_type_group_name="warehouse",
-            )
+        address_lineage=AddressLineage(
+            source_addresses=[
+                Address(
+                    name="source_db.source_schema.source_table",
+                    address_type_name="postgres",
+                    address_type_group_name="database",
+                )
+            ],
+            target_addresses=[
+                Address(
+                    name="target_db.target_schema.target_table",
+                    address_type_name="snowflake",
+                    address_type_group_name="warehouse",
+                )
+            ],
+        ),
+    )
 
 Loading Address Lineage
 ------------------------
@@ -43,8 +46,7 @@ the load_lineage flag is set to False. It can be set to True again through the W
 
 .. code-block:: python
 
-    from watcher import Watcher
-    from watcher.models.pipeline import PipelineConfig
+    from watcher import Watcher, PipelineConfig
 
     watcher = Watcher("https://api.watcher.example.com")
 

@@ -40,8 +40,7 @@ You can store your pipeline and address lineage configuration in a Python file.
 
 .. code-block:: python
 
-   from watcher.models.pipeline import Pipeline, PipelineConfig
-   from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+   from watcher import Pipeline, PipelineConfig, AddressLineage, Address
 
     MY_ETL_PIPELINE_CONFIG = PipelineConfig(
         pipeline=Pipeline(
@@ -51,14 +50,14 @@ You can store your pipeline and address lineage configuration in a Python file.
         ),
         address_lineage=AddressLineage(
             source_addresses=[
-                SourceAddress(
+                Address(
                     name="source_db.source_schema.source_table",
                     address_type_name="postgres",
                     address_type_group_name="database",
                 )
             ],
             target_addresses=[
-                TargetAddress(
+                Address(
                     name="target_db.target_schema.target_table",
                     address_type_name="snowflake",
                     address_type_group_name="warehouse",
@@ -79,8 +78,7 @@ This ensures your code is the source of truth for the pipeline and address linea
 
 .. code-block:: python
 
-   from watcher import Watcher
-   from watcher.models.pipeline import PipelineConfig
+   from watcher import Watcher, PipelineConfig
 
    watcher = Watcher("https://api.watcher.example.com")
    synced_config = watcher.sync_pipeline_config(MY_ETL_PIPELINE_CONFIG)
@@ -94,9 +92,7 @@ You can track and log the execution of your etl code by using the Watcher SDK.
 
 .. code-block:: python
 
-   from watcher import Watcher
-   from watcher.models.pipeline import PipelineConfig
-   from watcher.models.execution import ETLMetrics
+   from watcher import Watcher, PipelineConfig, ETLMetrics
    
    watcher = Watcher("https://api.watcher.example.com")
 

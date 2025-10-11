@@ -15,9 +15,7 @@ to your Pipeline Config before syncing with the Watcher framework.
 .. code-block:: python
 
     import pendulum
-    from watcher import Watcher
-    from watcher.models.pipeline import Pipeline, PipelineConfig
-    from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+    from watcher import Watcher, Pipeline, PipelineConfig, AddressLineage, Address
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -29,14 +27,14 @@ to your Pipeline Config before syncing with the Watcher framework.
         ),
         address_lineage=AddressLineage(
             source_addresses=[
-                SourceAddress(
+                Address(
                     name="source_db.source_schema.source_table",
                     address_type_name="postgres",
                     address_type_group_name="database",
                 )
             ],
             target_addresses=[
-                TargetAddress(
+                Address(
                     name="target_db.target_schema.target_table",
                     address_type_name="snowflake",
                     address_type_group_name="warehouse",
@@ -63,9 +61,7 @@ You can access the watermarks for your pipelines by using the WatcherExecutionCo
 
 .. code-block:: python
     
-    from watcher import Watcher
-    from watcher.models.pipeline import PipelineConfig
-    from watcher.models.execution import WatcherExecutionContext
+    from watcher import Watcher, PipelineConfig, WatcherExecutionContext
 
     watcher = Watcher("https://api.watcher.example.com")
 

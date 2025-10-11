@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from watcher.models.address_lineage import AddressLineage, SourceAddress, TargetAddress
+from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import (
     ETLMetrics,
     ExecutionResult,
@@ -156,12 +156,12 @@ def test_pipeline_optional_fields():
 
 def test_address_lineage_creation():
     """Test AddressLineage creation."""
-    source = SourceAddress(
+    source = Address(
         name="source-db",
         address_type_name="database",
         address_type_group_name="rdbms",
     )
-    target = TargetAddress(
+    target = Address(
         name="target-warehouse",
         address_type_name="data-warehouse",
         address_type_group_name="analytics",
@@ -185,25 +185,14 @@ def test_address_lineage_validation():
         AddressLineage(target_addresses=[])  # Empty target_addresses
 
 
-def test_source_address_validation():
-    """Test SourceAddress field validation."""
+def test_address_validation():
+    """Test Address field validation."""
     with pytest.raises(ValidationError):
-        SourceAddress(name="test")  # Missing required fields
+        Address(name="test")  # Missing required fields
 
     with pytest.raises(ValidationError):
-        SourceAddress(
+        Address(
             name="test", address_type_name="database"
-        )  # Missing address_type_group_name
-
-
-def test_target_address_validation():
-    """Test TargetAddress field validation."""
-    with pytest.raises(ValidationError):
-        TargetAddress(name="test")  # Missing required fields
-
-    with pytest.raises(ValidationError):
-        TargetAddress(
-            name="test", address_type_name="data-warehouse"
         )  # Missing address_type_group_name
 
 
@@ -211,12 +200,12 @@ def test_pipeline_config_creation():
     """Test PipelineConfig creation."""
     pipeline = Pipeline(name="test-pipeline", pipeline_type_name="data-transformation")
 
-    source = SourceAddress(
+    source = Address(
         name="source-db",
         address_type_name="database",
         address_type_group_name="rdbms",
     )
-    target = TargetAddress(
+    target = Address(
         name="target-warehouse",
         address_type_name="data-warehouse",
         address_type_group_name="analytics",
@@ -240,12 +229,12 @@ def test_synced_pipeline_config_creation():
     """Test SyncedPipelineConfig creation."""
     pipeline = Pipeline(name="test-pipeline", pipeline_type_name="data-transformation")
 
-    source = SourceAddress(
+    source = Address(
         name="source-db",
         address_type_name="database",
         address_type_group_name="rdbms",
     )
-    target = TargetAddress(
+    target = Address(
         name="target-warehouse",
         address_type_name="data-warehouse",
         address_type_group_name="analytics",
@@ -271,12 +260,12 @@ def test_synced_pipeline_config_inactive():
     """Test SyncedPipelineConfig with inactive pipeline."""
     pipeline = Pipeline(name="test-pipeline", pipeline_type_name="data-transformation")
 
-    source = SourceAddress(
+    source = Address(
         name="source-db",
         address_type_name="database",
         address_type_group_name="rdbms",
     )
-    target = TargetAddress(
+    target = Address(
         name="target-warehouse",
         address_type_name="data-warehouse",
         address_type_group_name="analytics",

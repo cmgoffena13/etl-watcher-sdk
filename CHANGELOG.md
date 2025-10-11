@@ -15,3 +15,9 @@
 - Support for inactive pipeline handling with warnings
 - Support for skipping inactive pipeline in `@track_pipeline_execution`
 - Connection pooling with `httpx.Client` for better performance
+
+## [0.1.1] - 2025-10-10
+
+### Added
+ - Simplified SourceAddress and TargetAddress into Address
+ - Simplified imports so `from watcher import *` can work
