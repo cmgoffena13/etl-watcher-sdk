@@ -195,7 +195,7 @@ class Watcher:
 
                     end_response = self.client.post(
                         "/end_pipeline_execution",
-                        json=end_payload.model_dump(),
+                        json=end_payload.model_dump(mode="json"),
                     )
                     end_response.raise_for_status()
 
@@ -211,7 +211,7 @@ class Watcher:
 
                     error_response = self.client.post(
                         "/end_pipeline_execution",
-                        json=error_payload.model_dump(),
+                        json=error_payload.model_dump(mode="json"),
                     )
                     error_response.raise_for_status()
                     raise e
