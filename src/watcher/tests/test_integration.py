@@ -9,12 +9,6 @@ from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConf
 
 
 @pytest.fixture
-def watcher_client():
-    """Create a Watcher client for integration testing."""
-    return Watcher("https://api.watcher.example.com")
-
-
-@pytest.fixture
 def integration_pipeline():
     """Create a complete pipeline configuration for integration testing."""
     return Pipeline(
@@ -54,8 +48,10 @@ def integration_config(integration_pipeline, integration_address_lineage):
     )
 
 
-@patch("watcher.client.Watcher._make_request")
-def test_complete_etl_workflow(mock_make_request, watcher_client, integration_config):
+@patch("watcher.client.Watcher._make_request_with_retry")
+def test_complete_etl_workflow(
+    mock_make_request_with_retry, watcher_client, integration_config
+):
     """Test complete ETL workflow from sync to execution."""
     # Mock successful pipeline sync
     mock_pipeline_response = Mock()
@@ -80,7 +76,7 @@ def test_complete_etl_workflow(mock_make_request, watcher_client, integration_co
     mock_execution_end = Mock()
     mock_execution_end.raise_for_status.return_value = None
 
-    mock_make_request.side_effect = [
+    mock_make_request_with_retry.side_effect = [
         mock_pipeline_response,  # Pipeline sync
         mock_lineage_response,  # Address lineage sync
         mock_execution_start,  # Start execution
@@ -127,12 +123,12 @@ def test_complete_etl_workflow(mock_make_request, watcher_client, integration_co
     assert result.results.total_rows == 1200
 
     # Verify all API calls were made
-    assert mock_make_request.call_count == 4
+    assert mock_make_request_with_retry.call_count == 4
 
 
-@patch("watcher.client.Watcher._make_request")
+@patch("watcher.client.Watcher._make_request_with_retry")
 def test_pipeline_chaining_workflow(
-    mock_make_request, watcher_client, integration_address_lineage
+    mock_make_request_with_retry, watcher_client, integration_address_lineage
 ):
     """Test pipeline chaining workflow."""
     # Mock responses for parent pipeline
@@ -156,7 +152,7 @@ def test_pipeline_chaining_workflow(
     mock_execution_end = Mock()
     mock_execution_end.raise_for_status.return_value = None
 
-    mock_make_request.side_effect = [
+    mock_make_request_with_retry.side_effect = [
         mock_parent_pipeline,  # Parent pipeline sync
         mock_parent_lineage,  # Parent address lineage sync
         mock_execution_start,  # Start parent execution
@@ -189,12 +185,12 @@ def test_pipeline_chaining_workflow(
     assert parent_result.execution_id == 456
 
     # Verify API calls were made
-    assert mock_make_request.call_count == 4
+    assert mock_make_request_with_retry.call_count == 4
 
 
-@patch("watcher.client.Watcher._make_request")
+@patch("watcher.client.Watcher._make_request_with_retry")
 def test_inactive_pipeline_workflow(
-    mock_make_request, watcher_client, integration_config
+    mock_make_request_with_retry, watcher_client, integration_config
 ):
     """Test workflow with inactive pipeline."""
     # Mock inactive pipeline response
@@ -206,7 +202,7 @@ def test_inactive_pipeline_workflow(
         "watermark": None,
     }
     mock_response.raise_for_status.return_value = None
-    mock_make_request.return_value = mock_response
+    mock_make_request_with_retry.return_value = mock_response
 
     # Sync inactive pipeline
     synced_config = watcher_client.sync_pipeline_config(integration_config)
@@ -225,11 +221,11 @@ def test_inactive_pipeline_workflow(
     assert result is None
 
     # Only pipeline sync call should be made, no execution calls
-    assert mock_make_request.call_count == 1
+    assert mock_make_request_with_retry.call_count == 1
 
 
-@patch("watcher.client.Watcher._make_request")
-def test_custom_metrics_workflow(mock_make_request, watcher_client):
+@patch("watcher.client.Watcher._make_request_with_retry")
+def test_custom_metrics_workflow(mock_make_request_with_retry, watcher_client):
     """Test workflow with custom ETLResults."""
     # Mock API responses
     mock_start = Mock()
@@ -239,7 +235,7 @@ def test_custom_metrics_workflow(mock_make_request, watcher_client):
     mock_end = Mock()
     mock_end.raise_for_status.return_value = None
 
-    mock_make_request.side_effect = [mock_start, mock_end]
+    mock_make_request_with_retry.side_effect = [mock_start, mock_end]
 
     class CustomMetrics(ETLResults):
         custom_field: str = "test"

@@ -6,6 +6,7 @@ import httpx
 import pendulum
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
+from watcher.exceptions import WatcherAPIError, WatcherNetworkError, handle_http_error
 from watcher.models.address_lineage import _AddressLineagePostInput
 from watcher.models.execution import (
     ETLResults,
@@ -36,9 +37,20 @@ class Watcher:
             timeout=30.0,
         )
 
-    @retry_http(max_retries=3, backoff_factor=1.0, jitter=True)
     def _make_request(self, method: str, endpoint: str, **kwargs):
-        """Make an HTTP request with retry logic."""
+        """Make an HTTP request with retry logic and proper error handling."""
+        try:
+            response = self._make_request_with_retry(method, endpoint, **kwargs)
+            response.raise_for_status()
+            return response
+        except httpx.HTTPStatusError as e:
+            raise handle_http_error(e)
+        except httpx.RequestError as e:
+            raise WatcherNetworkError(f"Network error: {e}")
+
+    @retry_http(max_retries=3, backoff_factor=1.0, jitter=True)
+    def _make_request_with_retry(self, method: str, endpoint: str, **kwargs):
+        """Make an HTTP request with retry logic (internal method)."""
         return self.client.request(method, endpoint, **kwargs)
 
     def sync_pipeline_config(self, config: PipelineConfig) -> SyncedPipelineConfig:
@@ -58,7 +70,6 @@ class Watcher:
             "/pipeline",
             json=pipeline_input.model_dump(exclude_unset=True),
         )
-        pipeline_response.raise_for_status()
         pipeline_endpoint_response = _PipelineResponse(**(pipeline_response.json()))
         if pipeline_endpoint_response.active is False:
             warnings.warn(
@@ -93,7 +104,6 @@ class Watcher:
                 "/address_lineage",
                 json=address_lineage_data.model_dump(exclude_unset=True),
             )
-            address_lineage_response.raise_for_status()
 
         return SyncedPipelineConfig(
             pipeline=_PipelineWithResponse(
@@ -166,7 +176,6 @@ class Watcher:
                     "/start_pipeline_execution",
                     json=start_execution,
                 )
-                start_response.raise_for_status()
                 execution_id = start_response.json()["id"]
 
                 try:
@@ -209,7 +218,6 @@ class Watcher:
                         "/end_pipeline_execution",
                         json=end_payload.model_dump(mode="json", exclude_unset=True),
                     )
-                    end_response.raise_for_status()
 
                     return ExecutionResult(execution_id=execution_id, results=result)
 
@@ -226,7 +234,6 @@ class Watcher:
                         "/end_pipeline_execution",
                         json=error_payload.model_dump(mode="json", exclude_unset=True),
                     )
-                    error_response.raise_for_status()
                     raise e
 
             return wrapper

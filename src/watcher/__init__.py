@@ -1,4 +1,5 @@
 from watcher.client import Watcher
+from watcher.exceptions import WatcherAPIError, WatcherError, WatcherNetworkError
 from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import (
     ETLResults,
@@ -9,6 +10,9 @@ from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConf
 
 __all__ = [
     "Watcher",
+    "WatcherAPIError",
+    "WatcherError",
+    "WatcherNetworkError",
     "PipelineConfig",
     "Pipeline",
     "SyncedPipelineConfig",

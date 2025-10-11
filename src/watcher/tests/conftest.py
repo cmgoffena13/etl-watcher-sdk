@@ -1,8 +1,15 @@
 import pytest
 
+from watcher import Watcher
 from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.pipeline import Pipeline, PipelineConfig
 from watcher.types import DatePartEnum
+
+
+@pytest.fixture
+def watcher_client():
+    """Create a Watcher client for testing."""
+    return Watcher("https://api.watcher.example.com")
 
 
 @pytest.fixture

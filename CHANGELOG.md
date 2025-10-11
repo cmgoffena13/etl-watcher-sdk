@@ -31,3 +31,12 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
  - Added `completed_successfully` to `ETLResults` to account for error handling
  - Restructured `SyncedPipelineConfig` to be more standardized
  - Added more fields for `Address`
+
+## [0.1.18] - 2025-10-11
+
+### Added
+- `WatcherAPIError` and `WatcherNetworkError` custom exceptions with detailed API context
+- HTTP retry logic with exponential backoff and jitter to prevent thundering herd
+- `retry_http` decorator for custom retry behavior on HTTP calls
+- Better error handling that surfaces API error details (status codes, error codes, response text)
+- Centralized test fixtures in `conftest.py` for better test organization
