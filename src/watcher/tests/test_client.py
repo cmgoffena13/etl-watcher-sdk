@@ -9,7 +9,7 @@ import pytest
 
 from watcher.client import Watcher
 from watcher.models.address_lineage import Address, AddressLineage
-from watcher.models.execution import ETLResults, WatcherExecutionContext
+from watcher.models.execution import ETLResult, WatcherExecutionContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
 
@@ -117,7 +117,7 @@ def test_track_pipeline_execution_decorator_without_context(
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def simple_etl():
-        return ETLResults(completed_successfully=True, inserts=100, total_rows=100)
+        return ETLResult(completed_successfully=True, inserts=100, total_rows=100)
 
     # This should work without watcher_context parameter
     result = simple_etl()
@@ -143,7 +143,7 @@ def test_track_pipeline_execution_decorator_with_context(
     def etl_with_context(watcher_context: WatcherExecutionContext):
         assert isinstance(watcher_context, WatcherExecutionContext)
         assert watcher_context.pipeline_id == 123
-        return ETLResults(completed_successfully=True, inserts=100, total_rows=100)
+        return ETLResult(completed_successfully=True, inserts=100, total_rows=100)
 
     # This should work with watcher_context parameter
     result = etl_with_context()
@@ -155,7 +155,7 @@ def test_track_pipeline_execution_inactive_pipeline(watcher_client):
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=False)
     def etl_inactive():
-        return ETLResults(completed_successfully=True, inserts=100, total_rows=100)
+        return ETLResult(completed_successfully=True, inserts=100, total_rows=100)
 
     # Should return None for inactive pipeline
     result = etl_inactive()
@@ -164,7 +164,7 @@ def test_track_pipeline_execution_inactive_pipeline(watcher_client):
 
 @patch("watcher.client.Watcher._make_request_with_retry")
 def test_etl_metrics_validation(mock_make_request_with_retry, watcher_client):
-    """Test ETLResults validation in decorator."""
+    """Test ETLResult validation in decorator."""
     # Mock API responses
     mock_start = Mock()
     mock_start.json.return_value = {"id": 456}
@@ -175,7 +175,7 @@ def test_etl_metrics_validation(mock_make_request_with_retry, watcher_client):
 
     mock_make_request_with_retry.side_effect = [mock_start, mock_end]
 
-    class CustomMetrics(ETLResults):
+    class CustomMetrics(ETLResult):
         custom_field: str = "test"
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
@@ -184,14 +184,14 @@ def test_etl_metrics_validation(mock_make_request_with_retry, watcher_client):
             completed_successfully=True, inserts=100, custom_field="hello"
         )
 
-    # Should work with inherited ETLResults
+    # Should work with inherited ETLResult
     result = etl_with_custom_metrics()
     assert result is not None
 
 
 @patch("watcher.client.Watcher._make_request_with_retry")
 def test_etl_metrics_validation_failure(mock_make_request_with_retry, watcher_client):
-    """Test ETLResults validation failure."""
+    """Test ETLResult validation failure."""
     # Mock API responses
     mock_start = Mock()
     mock_start.json.return_value = {"id": 456}
@@ -201,10 +201,10 @@ def test_etl_metrics_validation_failure(mock_make_request_with_retry, watcher_cl
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_invalid_return():
-        return {"inserts": 100}  # Not ETLResults
+        return {"inserts": 100}  # Not ETLResult
 
     # Should raise ValueError for invalid return type
-    with pytest.raises(ValueError, match="Function must return ETLResults"):
+    with pytest.raises(ValueError, match="Function must return ETLResult"):
         etl_invalid_return()
 
 
@@ -216,7 +216,7 @@ def test_execution_error_handling(mock_make_request_with_retry, watcher_client):
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_with_error():
-        return ETLResults(completed_successfully=True, inserts=100)
+        return ETLResult(completed_successfully=True, inserts=100)
 
     # Should propagate the HTTP error
     with pytest.raises(httpx.HTTPError):
@@ -239,8 +239,8 @@ def test_execution_context_fields():
 
 
 def test_etl_metrics_fields():
-    """Test ETLResults contains expected fields."""
-    metrics = ETLResults(
+    """Test ETLResult contains expected fields."""
+    metrics = ETLResult(
         completed_successfully=True,
         inserts=100,
         updates=50,

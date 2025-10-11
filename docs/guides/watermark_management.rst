@@ -87,7 +87,7 @@ You can access the watermarks for your pipelines by using the WatcherExecutionCo
                 AND date_column >= '{watcher_context.watermark}'
         """
         
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             inserts=100,
             total_rows=100,

@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import (
-    ETLResults,
+    ETLResult,
     ExecutionResult,
     WatcherExecutionContext,
 )
@@ -16,8 +16,8 @@ from watcher.models.pipeline import (
 
 
 def test_etl_metrics_creation():
-    """Test ETLResults creation with all fields."""
-    metrics = ETLResults(
+    """Test ETLResult creation with all fields."""
+    metrics = ETLResult(
         completed_successfully=True,
         inserts=100,
         updates=50,
@@ -35,8 +35,8 @@ def test_etl_metrics_creation():
 
 
 def test_etl_metrics_optional_fields():
-    """Test ETLResults with optional fields."""
-    metrics = ETLResults(completed_successfully=False)
+    """Test ETLResult with optional fields."""
+    metrics = ETLResult(completed_successfully=False)
 
     assert metrics.completed_successfully is False
     assert metrics.inserts is None
@@ -47,25 +47,25 @@ def test_etl_metrics_optional_fields():
 
 
 def test_etl_metrics_validation():
-    """Test ETLResults field validation."""
+    """Test ETLResult field validation."""
     # Test negative values are rejected
     with pytest.raises(ValidationError):
-        ETLResults(completed_successfully=True, inserts=-1)
+        ETLResult(completed_successfully=True, inserts=-1)
 
     with pytest.raises(ValidationError):
-        ETLResults(completed_successfully=True, updates=-5)
+        ETLResult(completed_successfully=True, updates=-5)
 
     with pytest.raises(ValidationError):
-        ETLResults(completed_successfully=True, soft_deletes=-2)
+        ETLResult(completed_successfully=True, soft_deletes=-2)
 
     with pytest.raises(ValidationError):
-        ETLResults(completed_successfully=True, total_rows=-10)
+        ETLResult(completed_successfully=True, total_rows=-10)
 
 
 def test_etl_metrics_inheritance():
-    """Test extending ETLResults."""
+    """Test extending ETLResult."""
 
-    class CustomMetrics(ETLResults):
+    class CustomMetrics(ETLResult):
         custom_field: str = "test"
         another_field: int = 42
 
@@ -77,7 +77,7 @@ def test_etl_metrics_inheritance():
     assert metrics.inserts == 100
     assert metrics.custom_field == "hello"
     assert metrics.another_field == 42
-    assert isinstance(metrics, ETLResults)
+    assert isinstance(metrics, ETLResult)
 
 
 def test_execution_context_creation():
@@ -117,7 +117,7 @@ def test_execution_context_validation():
 
 def test_execution_result_creation():
     """Test ExecutionResult creation."""
-    metrics = ETLResults(completed_successfully=True, inserts=100, total_rows=100)
+    metrics = ETLResult(completed_successfully=True, inserts=100, total_rows=100)
     result = ExecutionResult(execution_id=123, results=metrics)
 
     assert result.execution_id == 123

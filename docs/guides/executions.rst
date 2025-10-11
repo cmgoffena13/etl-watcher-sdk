@@ -37,10 +37,10 @@ Example Usage
         try:
             # Your ETL logic here
             if some_condition_fails:
-                return ETLResults(completed_successfully=False, execution_metadata={"error": "Data quality issues"})
-            return ETLResults(completed_successfully=True, inserts=100, total_rows=100)
+                return ETLResult(completed_successfully=False, execution_metadata={"error": "Data quality issues"})
+            return ETLResult(completed_successfully=True, inserts=100, total_rows=100)
         except Exception as e:
-            return ETLResults(completed_successfully=False, execution_metadata={"exception": str(e)})
+            return ETLResult(completed_successfully=False, execution_metadata={"exception": str(e)})
 
     # Access results
     result = etl_pipeline()
@@ -61,7 +61,7 @@ Example Usage
 
         # Work here
 
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             inserts=100,
             total_rows=100,
@@ -72,14 +72,14 @@ Example Usage
 Custom ETL Results
 ------------------
 
-You can extend ``ETLResults`` with custom fields to return additional data from your pipeline:
+You can extend ``ETLResult`` with custom fields to return additional data from your pipeline:
 
 .. code-block:: python
 
     from pydantic import BaseModel
-    from watcher import ETLResults
+    from watcher import ETLResult
 
-    class CustomETLResults(ETLResults):
+    class CustomETLResult(ETLResult):
         data_quality_score: Optional[float] = None
 
     @watcher.track_pipeline_execution(
@@ -89,7 +89,7 @@ You can extend ``ETLResults`` with custom fields to return additional data from 
 
         # ... do work ...
         
-        return CustomETLResults(
+        return CustomETLResult(
             completed_successfully=True,
             inserts=100,
             total_rows=100,
@@ -101,19 +101,19 @@ You can extend ``ETLResults`` with custom fields to return additional data from 
     print(f"Quality score: {output.results.data_quality_score}")
 
 .. note::
-   Custom fields are only accessible in your application code. Only the standard ETLResults fields 
+   Custom fields are only accessible in your application code. Only the standard ETLResult fields 
    (completed_successfully, inserts, updates, etc.) are sent to the Watcher API.
 
 ETL Results
 ------------
 
-The ETLResults is a class that is required to be returned from your pipeline function 
+The ETLResult is a class that is required to be returned from your pipeline function 
 if using the ``track_pipeline_execution`` decorator.
 It contains the metrics for your pipeline that are logged to the Watcher framework.
 
 .. code-block:: python
 
-    class ETLResults(BaseModel):
+    class ETLResult(BaseModel):
         completed_successfully: bool
         inserts: Optional[int] = Field(default=None, ge=0)
         updates: Optional[int] = Field(default=None, ge=0)
@@ -125,7 +125,7 @@ Code Example:
 
 .. code-block:: python
 
-    from watcher import ETLResults
+    from watcher import ETLResult
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
@@ -135,7 +135,7 @@ Code Example:
 
         # Work here
 
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             inserts=100,
             total_rows=100,
@@ -145,7 +145,7 @@ Execution Results
 -----------------
 
 The ExecutionResults is a class that is returned from your pipeline function. This 
-wraps around the ETLResults class and adds the execution id. This is to ensure access 
+wraps around the ETLResult class and adds the execution id. This is to ensure access 
 to the execution id for any usage. 
 
 .. code-block:: python
@@ -159,7 +159,7 @@ to the execution id for any usage.
 
         # Work here
 
-        return ETLResults(
+        return ETLResult(
                 completed_successfully=True,
                 inserts=100,
                 total_rows=100,
@@ -193,7 +193,7 @@ Your function must have `watcher_context` as a parameter if using the WatcherExe
         print(watcher_context.watermark)
         print(watcher_context.next_watermark)
 
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             inserts=100,
             total_rows=100,
@@ -229,13 +229,13 @@ You can provide child processes the parent execution id from the WatcherExecutio
 
             # Work here
 
-            return ETLResults(
+            return ETLResult(
                 completed_successfully=True,
                 inserts=100,
                 total_rows=100,
             )
         
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             inserts=100,
             total_rows=100,
@@ -258,7 +258,7 @@ through the Watcher framework directly as the active flag is received from the W
 
         # Function IS SKIPPED if active is False
 
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             inserts=100,
             total_rows=100,

@@ -27,8 +27,8 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 ## [0.1.16] - 2025-10-11
 
 ### Changed
- - `ETLMetrics` is now `ETLResults`
- - Added `completed_successfully` to `ETLResults` to account for error handling
+- `ETLMetrics` is now `ETLResult`
+ - Added `completed_successfully` to `ETLResult` to account for error handling
  - Restructured `SyncedPipelineConfig` to be more standardized
  - Added more fields for `Address`
 

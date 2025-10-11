@@ -9,7 +9,7 @@ from pydantic_extra_types.pendulum_dt import Date, DateTime
 from watcher.exceptions import WatcherNetworkError, handle_http_error
 from watcher.models.address_lineage import _AddressLineagePostInput
 from watcher.models.execution import (
-    ETLResults,
+    ETLResult,
     ExecutionResult,
     WatcherExecutionContext,
     _EndPipelineExecutionInput,
@@ -129,12 +129,12 @@ class Watcher:
         Decorator to track pipeline execution.
         Start the pipeline execution, and end it when the function is done.
 
-        The decorated function must return ETLResults or a model that inherits from ETLResults.
-        The ETLResults.completed_successfully field determines if the execution succeeded or failed.
+        The decorated function must return ETLResult or a model that inherits from ETLResult.
+        The ETLResult.completed_successfully field determines if the execution succeeded or failed.
 
         Exception Handling:
         - Unexpected exceptions (not handled by your ETL function) are logged as failures and re-raised
-        - ETL function logic failures should be handled by returning ETLResults(completed_successfully=False)
+        - ETL function logic failures should be handled by returning ETLResult(completed_successfully=False)
         - You can handle errors however you want - just set completed_successfully appropriately
 
         Example:
@@ -144,12 +144,12 @@ class Watcher:
                     # Your ETL logic
                     result = do_etl_work()
                     if result.success:
-                        return ETLResults(completed_successfully=True, inserts=100)
+                        return ETLResult(completed_successfully=True, inserts=100)
                     else:
-                        return ETLResults(completed_successfully=False, execution_metadata={"error": result.error})
+                        return ETLResult(completed_successfully=False, execution_metadata={"error": result.error})
                 except Exception as e:
                     # Handle unexpected errors
-                    return ETLResults(completed_successfully=False, execution_metadata={"exception": str(e)})
+                    return ETLResult(completed_successfully=False, execution_metadata={"exception": str(e)})
         """
 
         def decorator(func):
@@ -191,10 +191,10 @@ class Watcher:
                     else:
                         result = func(*args, **kwargs)
 
-                    # Validate result is ETLResults or inherits from it
-                    if not isinstance(result, ETLResults):
+                    # Validate result is ETLResult or inherits from it
+                    if not isinstance(result, ETLResult):
                         raise ValueError(
-                            f"Function must return ETLResults or a model that inherits from ETLResults. "
+                            f"Function must return ETLResult or a model that inherits from ETLResult. "
                             f"Got: {type(result).__name__}"
                         )
 
@@ -204,7 +204,7 @@ class Watcher:
                         "completed_successfully": result.completed_successfully,
                     }
 
-                    for field in ETLResults.model_fields:
+                    for field in ETLResult.model_fields:
                         if field == "completed_successfully":
                             continue  # Already handled above
                         value = getattr(result, field)

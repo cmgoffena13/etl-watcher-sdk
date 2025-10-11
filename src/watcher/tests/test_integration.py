@@ -2,9 +2,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from watcher.client import Watcher
 from watcher.models.address_lineage import Address, AddressLineage
-from watcher.models.execution import ETLResults, WatcherExecutionContext
+from watcher.models.execution import ETLResult, WatcherExecutionContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
 
@@ -104,7 +103,7 @@ def test_complete_etl_workflow(
         assert watcher_context.next_watermark == "2024-01-02"
 
         # Simulate ETL work
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             inserts=1000,
             updates=200,
@@ -177,7 +176,7 @@ def test_pipeline_chaining_workflow(
         pipeline_id=synced_parent.pipeline.id, active=synced_parent.pipeline.active
     )
     def parent_pipeline(watcher_context: WatcherExecutionContext):
-        return ETLResults(completed_successfully=True, inserts=500, total_rows=500)
+        return ETLResult(completed_successfully=True, inserts=500, total_rows=500)
 
     # Execute parent pipeline
     parent_result = parent_pipeline()
@@ -214,7 +213,7 @@ def test_inactive_pipeline_workflow(
         pipeline_id=synced_config.pipeline.id, active=synced_config.pipeline.active
     )
     def etl_inactive():
-        return ETLResults(completed_successfully=True, inserts=100, total_rows=100)
+        return ETLResult(completed_successfully=True, inserts=100, total_rows=100)
 
     # Execute should return None for inactive pipeline
     result = etl_inactive()
@@ -226,7 +225,7 @@ def test_inactive_pipeline_workflow(
 
 @patch("watcher.client.Watcher._make_request_with_retry")
 def test_custom_metrics_workflow(mock_make_request_with_retry, watcher_client):
-    """Test workflow with custom ETLResults."""
+    """Test workflow with custom ETLResult."""
     # Mock API responses
     mock_start = Mock()
     mock_start.json.return_value = {"id": 456}
@@ -237,7 +236,7 @@ def test_custom_metrics_workflow(mock_make_request_with_retry, watcher_client):
 
     mock_make_request_with_retry.side_effect = [mock_start, mock_end]
 
-    class CustomMetrics(ETLResults):
+    class CustomMetrics(ETLResult):
         custom_field: str = "test"
         processing_time: float = 0.0
 

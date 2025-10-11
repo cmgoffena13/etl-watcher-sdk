@@ -57,7 +57,7 @@ print(f"Pipeline synced!")
 ### Track Pipeline Execution
 
 ```python
-from watcher import Watcher, PipelineConfig, ETLResults
+from watcher import Watcher, PipelineConfig, ETLResult
 
 watcher = Watcher("https://api.watcher.example.com")
 
@@ -73,7 +73,7 @@ def etl_pipeline():
     # Your ETL work here
     # Set completed_successfully=True/False based on your logic
     
-    return ETLResults(
+    return ETLResult(
         completed_successfully=True,
         inserts=100,
         total_rows=100,
