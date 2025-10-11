@@ -4,17 +4,16 @@ Core Models
 ETLResult
 ---------
 
-The primary model for ETL execution results. Return this from your decorated ETL functions.
+Return this from your decorated ETL functions to report execution results.
 
-.. code-block:: python
+**Available Fields:**
 
-    class ETLResult(BaseModel):
-        completed_successfully: bool
-        inserts: Optional[int] = Field(default=None, ge=0)
-        updates: Optional[int] = Field(default=None, ge=0)
-        soft_deletes: Optional[int] = Field(default=None, ge=0)
-        total_rows: Optional[int] = Field(default=None, ge=0)
-        execution_metadata: Optional[dict] = None
+- ``completed_successfully`` (bool) - Whether the ETL completed successfully
+- ``inserts`` (int, optional) - Number of records inserted
+- ``updates`` (int, optional) - Number of records updated  
+- ``soft_deletes`` (int, optional) - Number of records soft deleted
+- ``total_rows`` (int, optional) - Total number of rows processed
+- ``execution_metadata`` (dict, optional) - Custom metadata about the execution
 
 **Usage:**
 
@@ -30,26 +29,26 @@ The primary model for ETL execution results. Return this from your decorated ETL
             execution_metadata={"partition": "2025-01-01"}
         )
 
-**Custom ETL Results:**
-You can extend ``ETLResult`` for custom data:
+**Custom Fields:**
+You can add custom fields by extending ``ETLResult``:
 
 .. code-block:: python
 
     class CustomETLResult(ETLResult):
         custom_metric: Optional[float] = None
+        processing_time: Optional[float] = None
 
 WatcherExecutionContext
 -----------------------
 
-Context object injected into decorated ETL functions.
+Context object automatically injected into your decorated ETL functions.
 
-.. code-block:: python
+**Available Fields:**
 
-    class WatcherExecutionContext(BaseModel):
-        execution_id: int
-        pipeline_id: int
-        watermark: Optional[Union[str, int, DateTime, Date]] = None
-        next_watermark: Optional[Union[str, int, DateTime, Date]] = None
+- ``execution_id`` (int) - Unique ID for this execution
+- ``pipeline_id`` (int) - ID of the pipeline being executed
+- ``watermark`` (str/int/DateTime/Date, optional) - Current watermark for incremental processing
+- ``next_watermark`` (str/int/DateTime/Date, optional) - Next watermark to set after execution
 
 **Usage:**
 
@@ -68,43 +67,78 @@ ExecutionResult
 
 Returned by the ``track_pipeline_execution`` decorator.
 
+**Available Fields:**
+
+- ``execution_id`` (int) - Unique ID for this execution
+- ``result`` (ETLResult) - The ETL results from your function:
+
+  - ``result.completed_successfully`` (bool) - Whether the ETL completed successfully
+  - ``result.inserts`` (int, optional) - Number of records inserted
+  - ``result.updates`` (int, optional) - Number of records updated
+  - ``result.soft_deletes`` (int, optional) - Number of records soft deleted
+  - ``result.total_rows`` (int, optional) - Total number of rows processed
+  - ``result.execution_metadata`` (dict, optional) - Custom metadata about the execution
+
+**Usage:**
+
 .. code-block:: python
 
-    class ExecutionResult(BaseModel):
-        execution_id: int
-        result: ETLResult
+    result = my_pipeline()
+    print(f"Execution ID: {result.execution_id}")
+    print(f"Success: {result.result.completed_successfully}")
+    print(f"Rows processed: {result.result.total_rows}")
 
-Pipeline Models
-===============
+Pipeline Configuration
+======================
 
 Pipeline
 --------
 
-Core pipeline definition. This information is synced with the Watcher Framework.
+Core pipeline definition that gets synced with the Watcher Framework.
 
-.. code-block:: python
+**Available Fields:**
 
-    class Pipeline(BaseModel):
-        name: str = Field(max_length=150, min_length=1)
-        pipeline_type_name: str = Field(max_length=150, min_length=1)
-        pipeline_metadata: Optional[dict] = None
-        freshness_number: Optional[int] = Field(default=None, gt=0)
-        freshness_datepart: Optional[DatePartEnum] = None
-        timeliness_number: Optional[int] = Field(default=None, gt=0)
-        timeliness_datepart: Optional[DatePartEnum] = None
+- ``name`` (str) - Pipeline name (1-150 characters)
+- ``pipeline_type_name`` (str) - Type of pipeline (1-150 characters)
+- ``pipeline_metadata`` (dict, optional) - Custom metadata about the pipeline
+- ``freshness_number`` (int, optional) - Number for freshness monitoring
+- ``freshness_datepart`` (DatePartEnum, optional) - Date part for freshness monitoring
+- ``timeliness_number`` (int, optional) - Number for timeliness monitoring  
+- ``timeliness_datepart`` (DatePartEnum, optional) - Date part for timeliness monitoring
 
 PipelineConfig
 --------------
 
 Complete pipeline configuration including address lineage and watermarks.
 
-.. code-block:: python
+**Available Fields:**
 
-    class PipelineConfig(BaseModel):
-        pipeline: Pipeline
-        address_lineage: Optional[AddressLineage] = None
-        default_watermark: Optional[Union[str, int, DateTime, Date]] = None
-        next_watermark: Optional[Union[str, int, DateTime, Date]] = None
+- ``pipeline`` - The pipeline definition:
+
+  - ``pipeline.name`` (str) - Pipeline name (1-150 characters)
+  - ``pipeline.pipeline_type_name`` (str) - Type of pipeline (1-150 characters)
+  - ``pipeline.pipeline_metadata`` (dict, optional) - Custom metadata about the pipeline
+  - ``pipeline.freshness_number`` (int, optional) - Number for freshness monitoring
+  - ``pipeline.freshness_datepart`` (DatePartEnum, optional) - Date part for freshness monitoring
+  - ``pipeline.timeliness_number`` (int, optional) - Number for timeliness monitoring
+  - ``pipeline.timeliness_datepart`` (DatePartEnum, optional) - Date part for timeliness monitoring
+
+- ``address_lineage`` (AddressLineage, optional) - Data lineage information:
+  - ``address_lineage.source_addresses`` (List[Address]) - List of source addresses
+  - ``address_lineage.target_addresses`` (List[Address]) - List of target addresses
+
+  - Each Address contains:
+
+    - ``name`` (str) - Address name (1-150 characters)
+    - ``address_type_name`` (str) - Type of address (1-150 characters)
+    - ``address_type_group_name`` (str) - Group name (1-150 characters)
+    - ``database_name`` (str, optional) - Database name (max 50 characters)
+    - ``schema_name`` (str, optional) - Schema name (max 50 characters)
+    - ``table_name`` (str, optional) - Table name (max 50 characters)
+    - ``primary_key`` (str, optional) - Primary key field (max 50 characters)
+
+- ``default_watermark`` (str/int/DateTime/Date, optional) - Default watermark for the pipeline
+- ``next_watermark`` (str/int/DateTime/Date, optional) - Next watermark to set
 
 **Usage:**
 
@@ -127,13 +161,40 @@ Complete pipeline configuration including address lineage and watermarks.
 SyncedPipelineConfig
 --------------------
 
-Pipeline configuration after syncing with the Watcher API.
+Pipeline configuration after syncing with the Watcher API. **Extends PipelineConfig** with additional fields from the API response.
 
-.. code-block:: python
+**Available Fields:**
 
-    class SyncedPipelineConfig(PipelineConfig):
-        pipeline: _PipelineWithResponse  # Includes id and active fields
-        watermark: Optional[Union[str, int, DateTime, Date]] = None
+- ``pipeline`` - The pipeline definition with additional fields:
+
+  - ``pipeline.name`` (str) - Pipeline name (1-150 characters)
+  - ``pipeline.pipeline_type_name`` (str) - Type of pipeline (1-150 characters)
+  - ``pipeline.pipeline_metadata`` (dict, optional) - Custom metadata about the pipeline
+  - ``pipeline.freshness_number`` (int, optional) - Number for freshness monitoring
+  - ``pipeline.freshness_datepart`` (DatePartEnum, optional) - Date part for freshness monitoring
+  - ``pipeline.timeliness_number`` (int, optional) - Number for timeliness monitoring
+  - ``pipeline.timeliness_datepart`` (DatePartEnum, optional) - Date part for timeliness monitoring
+  - ``pipeline.id`` (int) - Pipeline ID assigned by the API
+  - ``pipeline.active`` (bool) - Whether the pipeline is active
+
+- ``address_lineage`` (AddressLineage, optional) - Data lineage information:
+
+  - ``address_lineage.source_addresses`` (List[Address]) - List of source addresses
+  - ``address_lineage.target_addresses`` (List[Address]) - List of target addresses
+
+  - Each Address contains:
+
+    - ``name`` (str) - Address name (1-150 characters)
+    - ``address_type_name`` (str) - Type of address (1-150 characters)
+    - ``address_type_group_name`` (str) - Group name (1-150 characters)
+    - ``database_name`` (str, optional) - Database name (max 50 characters)
+    - ``schema_name`` (str, optional) - Schema name (max 50 characters)
+    - ``table_name`` (str, optional) - Table name (max 50 characters)
+    - ``primary_key`` (str, optional) - Primary key field (max 50 characters)
+- ``default_watermark`` (str/int/DateTime/Date, optional) - Default watermark for the pipeline
+
+- ``next_watermark`` (str/int/DateTime/Date, optional) - Next watermark to set
+- ``watermark`` (str/int/DateTime/Date, optional) - Current watermark from the API
 
 **Usage:**
 
@@ -144,24 +205,23 @@ Pipeline configuration after syncing with the Watcher API.
     print(f"Active: {synced_config.pipeline.active}")
     print(f"Watermark: {synced_config.watermark}")
 
-Address Models
-==============
+Data Lineage
+============
 
 Address
 -------
 
-Unified address model for both source and target addresses.
+Represents a data source or target for lineage tracking.
 
-.. code-block:: python
+**Available Fields:**
 
-    class Address(BaseModel):
-        name: str = Field(max_length=150, min_length=1)
-        address_type_name: str = Field(max_length=150, min_length=1)
-        address_type_group_name: str = Field(max_length=150, min_length=1)
-        database_name: Optional[str] = Field(None, max_length=50)
-        schema_name: Optional[str] = Field(None, max_length=50)
-        table_name: Optional[str] = Field(None, max_length=50)
-        primary_key: Optional[str] = Field(None, max_length=50)
+- ``name`` (str) - Address name (1-150 characters)
+- ``address_type_name`` (str) - Type of address (1-150 characters)
+- ``address_type_group_name`` (str) - Group name (1-150 characters)
+- ``database_name`` (str, optional) - Database name (max 50 characters)
+- ``schema_name`` (str, optional) - Schema name (max 50 characters)
+- ``table_name`` (str, optional) - Table name (max 50 characters)
+- ``primary_key`` (str, optional) - Primary key field (max 50 characters)
 
 **Usage:**
 
@@ -180,13 +240,28 @@ Unified address model for both source and target addresses.
 AddressLineage
 --------------
 
-Defines the data lineage between source and target addresses. This information is synced with the Watcher Framework.
+Defines the data lineage between source and target addresses.
 
-.. code-block:: python
+**Available Fields:**
 
-    class AddressLineage(BaseModel):
-        source_addresses: List[Address]
-        target_addresses: List[Address]
+- ``source_addresses`` (List[Address]) - List of source addresses:
+  - Each Address contains:
+    - ``name`` (str) - Address name (1-150 characters)
+    - ``address_type_name`` (str) - Type of address (1-150 characters)
+    - ``address_type_group_name`` (str) - Group name (1-150 characters)
+    - ``database_name`` (str, optional) - Database name (max 50 characters)
+    - ``schema_name`` (str, optional) - Schema name (max 50 characters)
+    - ``table_name`` (str, optional) - Table name (max 50 characters)
+    - ``primary_key`` (str, optional) - Primary key field (max 50 characters)
+- ``target_addresses`` (List[Address]) - List of target addresses:
+  - Each Address contains:
+    - ``name`` (str) - Address name (1-150 characters)
+    - ``address_type_name`` (str) - Type of address (1-150 characters)
+    - ``address_type_group_name`` (str) - Group name (1-150 characters)
+    - ``database_name`` (str, optional) - Database name (max 50 characters)
+    - ``schema_name`` (str, optional) - Schema name (max 50 characters)
+    - ``table_name`` (str, optional) - Table name (max 50 characters)
+    - ``primary_key`` (str, optional) - Primary key field (max 50 characters)
 
 **Usage:**
 
@@ -197,22 +272,21 @@ Defines the data lineage between source and target addresses. This information i
         target_addresses=[target_address]
     )
 
-Exception Models
-================
+Error Handling
+===============
 
 WatcherAPIError
 ---------------
 
 Raised for API-related errors with detailed context.
 
-.. code-block:: python
+**Available Fields:**
 
-    class WatcherAPIError(WatcherError):
-        status_code: Optional[int] = None
-        response_text: Optional[str] = None
-        response_headers: Optional[Dict[str, str]] = None
-        error_code: Optional[str] = None
-        error_details: Optional[Dict[str, Any]] = None
+- ``status_code`` (int, optional) - HTTP status code
+- ``response_text`` (str, optional) - Response text from the API
+- ``response_headers`` (dict, optional) - Response headers
+- ``error_code`` (str, optional) - Specific error code from the API
+- ``error_details`` (dict, optional) - Additional error details
 
 **Usage:**
 
@@ -229,11 +303,6 @@ WatcherNetworkError
 -------------------
 
 Raised for network/connection errors.
-
-.. code-block:: python
-
-    class WatcherNetworkError(WatcherError):
-        pass
 
 **Usage:**
 

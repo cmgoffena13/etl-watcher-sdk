@@ -63,18 +63,18 @@
 <li class="toctree-l2"><a class="reference internal" href="#executionresult">ExecutionResult</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#pipeline-models">Pipeline Models</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="#pipeline-configuration">Pipeline Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline">Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pipelineconfig">PipelineConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#syncedpipelineconfig">SyncedPipelineConfig</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#address-models">Address Models</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="#data-lineage">Data Lineage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#address">Address</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#addresslineage">AddressLineage</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#exception-models">Exception Models</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="#error-handling">Error Handling</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#watcherapierror">WatcherAPIError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watchernetworkerror">WatcherNetworkError</a></li>
 </ul>
@@ -143,16 +143,16 @@
 <h1>Core Models<a class="headerlink" href="#core-models" title="Link to this heading"></a></h1>
 <section id="etlresult">
 <h2>ETLResult<a class="headerlink" href="#etlresult" title="Link to this heading"></a></h2>
-<p>The primary model for ETL execution results. Return this from your decorated ETL functions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ETLResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">completed_successfully</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">inserts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">updates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">soft_deletes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">total_rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">execution_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
+<p>Return this from your decorated ETL functions to report execution results.</p>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">completed_successfully</span></code> (bool) - Whether the ETL completed successfully</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inserts</span></code> (int, optional) - Number of records inserted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updates</span></code> (int, optional) - Number of records updated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">soft_deletes</span></code> (int, optional) - Number of records soft deleted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_rows</span></code> (int, optional) - Total number of rows processed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_metadata</span></code> (dict, optional) - Custom metadata about the execution</p></li>
+</ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_etl_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
@@ -165,23 +165,24 @@
     <span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Custom ETL Results:</strong>
-You can extend <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code> for custom data:</p>
+<p><strong>Custom Fields:</strong>
+You can add custom fields by extending <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomETLResult</span><span class="p">(</span><span class="n">ETLResult</span><span class="p">):</span>
     <span class="n">custom_metric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">processing_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
 </section>
 <section id="watcherexecutioncontext">
 <h2>WatcherExecutionContext<a class="headerlink" href="#watcherexecutioncontext" title="Link to this heading"></a></h2>
-<p>Context object injected into decorated ETL functions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">WatcherExecutionContext</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">execution_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
+<p>Context object automatically injected into your decorated ETL functions.</p>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int) - Unique ID for this execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int) - ID of the pipeline being executed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (str/int/DateTime/Date, optional) - Current watermark for incremental processing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (str/int/DateTime/Date, optional) - Next watermark to set after execution</p></li>
+</ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_etl_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
@@ -196,39 +197,81 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 <section id="executionresult">
 <h2>ExecutionResult<a class="headerlink" href="#executionresult" title="Link to this heading"></a></h2>
 <p>Returned by the <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code> decorator.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExecutionResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">execution_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">ETLResult</span>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int) - Unique ID for this execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result</span></code> (ETLResult) - The ETL results from your function:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.completed_successfully</span></code> (bool) - Whether the ETL completed successfully</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.inserts</span></code> (int, optional) - Number of records inserted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.updates</span></code> (int, optional) - Number of records updated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.soft_deletes</span></code> (int, optional) - Number of records soft deleted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.total_rows</span></code> (int, optional) - Total number of rows processed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">result.execution_metadata</span></code> (dict, optional) - Custom metadata about the execution</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Usage:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution ID: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">execution_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Success: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">completed_successfully</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rows processed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">total_rows</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 </section>
-<section id="pipeline-models">
-<h1>Pipeline Models<a class="headerlink" href="#pipeline-models" title="Link to this heading"></a></h1>
+<section id="pipeline-configuration">
+<h1>Pipeline Configuration<a class="headerlink" href="#pipeline-configuration" title="Link to this heading"></a></h1>
 <section id="pipeline">
 <h2>Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading"></a></h2>
-<p>Core pipeline definition. This information is synced with the Watcher Framework.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">pipeline_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">pipeline_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">freshness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">freshness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">timeliness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">timeliness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
+<p>Core pipeline definition that gets synced with the Watcher Framework.</p>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (str) - Pipeline name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_name</span></code> (str) - Type of pipeline (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_metadata</span></code> (dict, optional) - Custom metadata about the pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int, optional) - Number for freshness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (DatePartEnum, optional) - Date part for freshness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int, optional) - Number for timeliness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (DatePartEnum, optional) - Date part for timeliness monitoring</p></li>
+</ul>
 </section>
 <section id="pipelineconfig">
 <h2>PipelineConfig<a class="headerlink" href="#pipelineconfig" title="Link to this heading"></a></h2>
 <p>Complete pipeline configuration including address lineage and watermarks.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelineConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span>
-    <span class="n">address_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AddressLineage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">default_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline</span></code> - The pipeline definition:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.name</span></code> (str) - Pipeline name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.pipeline_type_name</span></code> (str) - Type of pipeline (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.pipeline_metadata</span></code> (dict, optional) - Custom metadata about the pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.freshness_number</span></code> (int, optional) - Number for freshness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.freshness_datepart</span></code> (DatePartEnum, optional) - Date part for freshness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.timeliness_number</span></code> (int, optional) - Number for timeliness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.timeliness_datepart</span></code> (DatePartEnum, optional) - Date part for timeliness monitoring</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_lineage</span></code> (AddressLineage, optional) - Data lineage information:
+- <code class="docutils literal notranslate"><span class="pre">address_lineage.source_addresses</span></code> (List[Address]) - List of source addresses
+- <code class="docutils literal notranslate"><span class="pre">address_lineage.target_addresses</span></code> (List[Address]) - List of target addresses</p>
+<ul>
+<li><p>Each Address contains:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (str) - Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_name</span></code> (str) - Type of address (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_group_name</span></code> (str) - Group name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (str, optional) - Database name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (str, optional) - Schema name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (str, optional) - Table name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (str, optional) - Primary key field (max 50 characters)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_watermark</span></code> (str/int/DateTime/Date, optional) - Default watermark for the pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (str/int/DateTime/Date, optional) - Next watermark to set</p></li>
+</ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
     <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
@@ -248,12 +291,43 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 </section>
 <section id="syncedpipelineconfig">
 <h2>SyncedPipelineConfig<a class="headerlink" href="#syncedpipelineconfig" title="Link to this heading"></a></h2>
-<p>Pipeline configuration after syncing with the Watcher API.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SyncedPipelineConfig</span><span class="p">(</span><span class="n">PipelineConfig</span><span class="p">):</span>
-    <span class="n">pipeline</span><span class="p">:</span> <span class="n">_PipelineWithResponse</span>  <span class="c1"># Includes id and active fields</span>
-    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
+<p>Pipeline configuration after syncing with the Watcher API. <strong>Extends PipelineConfig</strong> with additional fields from the API response.</p>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline</span></code> - The pipeline definition with additional fields:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.name</span></code> (str) - Pipeline name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.pipeline_type_name</span></code> (str) - Type of pipeline (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.pipeline_metadata</span></code> (dict, optional) - Custom metadata about the pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.freshness_number</span></code> (int, optional) - Number for freshness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.freshness_datepart</span></code> (DatePartEnum, optional) - Date part for freshness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.timeliness_number</span></code> (int, optional) - Number for timeliness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.timeliness_datepart</span></code> (DatePartEnum, optional) - Date part for timeliness monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.id</span></code> (int) - Pipeline ID assigned by the API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline.active</span></code> (bool) - Whether the pipeline is active</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_lineage</span></code> (AddressLineage, optional) - Data lineage information:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_lineage.source_addresses</span></code> (List[Address]) - List of source addresses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_lineage.target_addresses</span></code> (List[Address]) - List of target addresses</p></li>
+<li><p>Each Address contains:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (str) - Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_name</span></code> (str) - Type of address (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_group_name</span></code> (str) - Group name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (str, optional) - Database name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (str, optional) - Schema name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (str, optional) - Table name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (str, optional) - Primary key field (max 50 characters)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_watermark</span></code> (str/int/DateTime/Date, optional) - Default watermark for the pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (str/int/DateTime/Date, optional) - Next watermark to set</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (str/int/DateTime/Date, optional) - Current watermark from the API</p></li>
+</ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">synced_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline ID: </span><span class="si">{</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -263,21 +337,21 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 </div>
 </section>
 </section>
-<section id="address-models">
-<h1>Address Models<a class="headerlink" href="#address-models" title="Link to this heading"></a></h1>
+<section id="data-lineage">
+<h1>Data Lineage<a class="headerlink" href="#data-lineage" title="Link to this heading"></a></h1>
 <section id="address">
 <h2>Address<a class="headerlink" href="#address" title="Link to this heading"></a></h2>
-<p>Unified address model for both source and target addresses.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Address</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">address_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">address_type_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">database_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-    <span class="n">schema_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-    <span class="n">table_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-    <span class="n">primary_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Represents a data source or target for lineage tracking.</p>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (str) - Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_name</span></code> (str) - Type of address (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_group_name</span></code> (str) - Group name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (str, optional) - Database name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (str, optional) - Schema name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (str, optional) - Table name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (str, optional) - Primary key field (max 50 characters)</p></li>
+</ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">source_address</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;source_db.source_schema.users&quot;</span><span class="p">,</span>
@@ -293,12 +367,38 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 </section>
 <section id="addresslineage">
 <h2>AddressLineage<a class="headerlink" href="#addresslineage" title="Link to this heading"></a></h2>
-<p>Defines the data lineage between source and target addresses. This information is synced with the Watcher Framework.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">source_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Address</span><span class="p">]</span>
-    <span class="n">target_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Address</span><span class="p">]</span>
-</pre></div>
-</div>
+<p>Defines the data lineage between source and target addresses.</p>
+<p><strong>Available Fields:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_addresses</span></code> (List[Address]) - List of source addresses:
+- Each Address contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (str) - Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_name</span></code> (str) - Type of address (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_group_name</span></code> (str) - Group name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (str, optional) - Database name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (str, optional) - Schema name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (str, optional) - Table name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (str, optional) - Primary key field (max 50 characters)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_addresses</span></code> (List[Address]) - List of target addresses:
+- Each Address contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (str) - Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_name</span></code> (str) - Type of address (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_group_name</span></code> (str) - Group name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (str, optional) - Database name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (str, optional) - Schema name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (str, optional) - Table name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (str, optional) - Primary key field (max 50 characters)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lineage</span> <span class="o">=</span> <span class="n">AddressLineage</span><span class="p">(</span>
     <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span><span class="n">source_address</span><span class="p">],</span>
@@ -308,19 +408,19 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 </div>
 </section>
 </section>
-<section id="exception-models">
-<h1>Exception Models<a class="headerlink" href="#exception-models" title="Link to this heading"></a></h1>
+<section id="error-handling">
+<h1>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h1>
 <section id="watcherapierror">
 <h2>WatcherAPIError<a class="headerlink" href="#watcherapierror" title="Link to this heading"></a></h2>
 <p>Raised for API-related errors with detailed context.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">WatcherAPIError</span><span class="p">(</span><span class="n">WatcherError</span><span class="p">):</span>
-    <span class="n">status_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">response_text</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">response_headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">error_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">error_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
+<p><strong>Available Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">status_code</span></code> (int, optional) - HTTP status code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">response_text</span></code> (str, optional) - Response text from the API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">response_headers</span></code> (dict, optional) - Response headers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_code</span></code> (str, optional) - Specific error code from the API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_details</span></code> (dict, optional) - Additional error details</p></li>
+</ul>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
@@ -334,10 +434,6 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 <section id="watchernetworkerror">
 <h2>WatcherNetworkError<a class="headerlink" href="#watchernetworkerror" title="Link to this heading"></a></h2>
 <p>Raised for network/connection errors.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">WatcherNetworkError</span><span class="p">(</span><span class="n">WatcherError</span><span class="p">):</span>
-    <span class="k">pass</span>
-</pre></div>
-</div>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
