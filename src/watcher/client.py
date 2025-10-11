@@ -20,6 +20,7 @@ from watcher.models.pipeline import (
     _PipelineResponse,
     _PipelineWithResponse,
 )
+from watcher.utils import retry_http
 
 
 class Watcher:
@@ -35,6 +36,11 @@ class Watcher:
             timeout=30.0,
         )
 
+    @retry_http(max_retries=3, backoff_factor=1.0, jitter=True)
+    def _make_request(self, method: str, endpoint: str, **kwargs):
+        """Make an HTTP request with retry logic."""
+        return self.client.request(method, endpoint, **kwargs)
+
     def sync_pipeline_config(self, config: PipelineConfig) -> SyncedPipelineConfig:
         """
         Sync a pipeline config to the Watcher framework.
@@ -47,7 +53,8 @@ class Watcher:
             **config.pipeline.model_dump(),
             next_watermark=config.next_watermark,
         )
-        pipeline_response = self.client.post(
+        pipeline_response = self._make_request(
+            "POST",
             "/pipeline",
             json=pipeline_input.model_dump(exclude_unset=True),
         )
@@ -81,7 +88,8 @@ class Watcher:
                 **config.address_lineage.model_dump(),
             )
 
-            address_lineage_response = self.client.post(
+            address_lineage_response = self._make_request(
+                "POST",
                 "/address_lineage",
                 json=address_lineage_data.model_dump(exclude_unset=True),
             )
@@ -153,8 +161,10 @@ class Watcher:
                 if next_watermark is not None:
                     start_execution["next_watermark"] = next_watermark
 
-                start_response = self.client.post(
-                    "/start_pipeline_execution", json=start_execution
+                start_response = self._make_request(
+                    "POST",
+                    "/start_pipeline_execution",
+                    json=start_execution,
                 )
                 start_response.raise_for_status()
                 execution_id = start_response.json()["id"]
@@ -194,7 +204,8 @@ class Watcher:
 
                     end_payload = _EndPipelineExecutionInput(**end_payload_data)
 
-                    end_response = self.client.post(
+                    end_response = self._make_request(
+                        "POST",
                         "/end_pipeline_execution",
                         json=end_payload.model_dump(mode="json", exclude_unset=True),
                     )
@@ -210,7 +221,8 @@ class Watcher:
                         completed_successfully=False,
                     )
 
-                    error_response = self.client.post(
+                    error_response = self._make_request(
+                        "POST",
                         "/end_pipeline_execution",
                         json=error_payload.model_dump(mode="json", exclude_unset=True),
                     )

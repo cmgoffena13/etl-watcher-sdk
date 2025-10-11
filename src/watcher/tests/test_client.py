@@ -54,9 +54,9 @@ def test_watcher_initialization():
     assert isinstance(watcher.client, httpx.Client)
 
 
-@patch("httpx.Client.post")
+@patch("watcher.client.Watcher._make_request")
 def test_sync_pipeline_config_success(
-    mock_post, watcher_client, sample_pipeline_config
+    mock_make_request, watcher_client, sample_pipeline_config
 ):
     """Test successful pipeline sync."""
     # Mock API responses
@@ -72,19 +72,19 @@ def test_sync_pipeline_config_success(
     mock_lineage_response = Mock()
     mock_lineage_response.raise_for_status.return_value = None
 
-    mock_post.side_effect = [mock_pipeline_response, mock_lineage_response]
+    mock_make_request.side_effect = [mock_pipeline_response, mock_lineage_response]
 
     result = watcher_client.sync_pipeline_config(sample_pipeline_config)
 
     assert isinstance(result, SyncedPipelineConfig)
     assert result.pipeline.active is True
     assert result.watermark == "2024-01-01"
-    assert mock_post.call_count == 2  # Pipeline + address lineage
+    assert mock_make_request.call_count == 2  # Pipeline + address lineage
 
 
-@patch("httpx.Client.post")
+@patch("watcher.client.Watcher._make_request")
 def test_sync_pipeline_config_inactive(
-    mock_post, watcher_client, sample_pipeline_config
+    mock_make_request, watcher_client, sample_pipeline_config
 ):
     """Test pipeline sync when pipeline is inactive."""
     # Mock inactive pipeline response
@@ -96,19 +96,19 @@ def test_sync_pipeline_config_inactive(
         "watermark": None,
     }
     mock_response.raise_for_status.return_value = None
-    mock_post.return_value = mock_response
+    mock_make_request.return_value = mock_response
 
     result = watcher_client.sync_pipeline_config(sample_pipeline_config)
 
     assert isinstance(result, SyncedPipelineConfig)
     assert result.pipeline.active is False
     assert result.watermark is None  # Inactive pipelines have no watermark
-    assert mock_post.call_count == 1  # Only pipeline call, no lineage
+    assert mock_make_request.call_count == 1  # Only pipeline call, no lineage
 
 
-@patch("httpx.Client.post")
+@patch("watcher.client.Watcher._make_request")
 def test_sync_pipeline_config_no_lineage(
-    mock_post, watcher_client, sample_pipeline_config
+    mock_make_request, watcher_client, sample_pipeline_config
 ):
     """Test pipeline sync when load_lineage is False."""
     # Mock pipeline response with load_lineage=False
@@ -120,17 +120,19 @@ def test_sync_pipeline_config_no_lineage(
         "watermark": "2024-01-01",
     }
     mock_response.raise_for_status.return_value = None
-    mock_post.return_value = mock_response
+    mock_make_request.return_value = mock_response
 
     result = watcher_client.sync_pipeline_config(sample_pipeline_config)
 
     assert isinstance(result, SyncedPipelineConfig)
     assert result.pipeline.active is True
-    assert mock_post.call_count == 1  # Only pipeline call
+    assert mock_make_request.call_count == 1  # Only pipeline call
 
 
-@patch("httpx.Client.post")
-def test_track_pipeline_execution_decorator_without_context(mock_post, watcher_client):
+@patch("watcher.client.Watcher._make_request")
+def test_track_pipeline_execution_decorator_without_context(
+    mock_make_request, watcher_client
+):
     """Test execution decorator without watcher_context parameter."""
     # Mock API responses
     mock_start = Mock()
@@ -140,7 +142,7 @@ def test_track_pipeline_execution_decorator_without_context(mock_post, watcher_c
     mock_end = Mock()
     mock_end.raise_for_status.return_value = None
 
-    mock_post.side_effect = [mock_start, mock_end]
+    mock_make_request.side_effect = [mock_start, mock_end]
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def simple_etl():
@@ -151,8 +153,10 @@ def test_track_pipeline_execution_decorator_without_context(mock_post, watcher_c
     assert result is not None
 
 
-@patch("httpx.Client.post")
-def test_track_pipeline_execution_decorator_with_context(mock_post, watcher_client):
+@patch("watcher.client.Watcher._make_request")
+def test_track_pipeline_execution_decorator_with_context(
+    mock_make_request, watcher_client
+):
     """Test execution decorator with watcher_context parameter."""
     # Mock API responses
     mock_start = Mock()
@@ -162,7 +166,7 @@ def test_track_pipeline_execution_decorator_with_context(mock_post, watcher_clie
     mock_end = Mock()
     mock_end.raise_for_status.return_value = None
 
-    mock_post.side_effect = [mock_start, mock_end]
+    mock_make_request.side_effect = [mock_start, mock_end]
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_with_context(watcher_context: WatcherExecutionContext):
@@ -187,8 +191,8 @@ def test_track_pipeline_execution_inactive_pipeline(watcher_client):
     assert result is None
 
 
-@patch("httpx.Client.post")
-def test_etl_metrics_validation(mock_post, watcher_client):
+@patch("watcher.client.Watcher._make_request")
+def test_etl_metrics_validation(mock_make_request, watcher_client):
     """Test ETLResults validation in decorator."""
     # Mock API responses
     mock_start = Mock()
@@ -198,7 +202,7 @@ def test_etl_metrics_validation(mock_post, watcher_client):
     mock_end = Mock()
     mock_end.raise_for_status.return_value = None
 
-    mock_post.side_effect = [mock_start, mock_end]
+    mock_make_request.side_effect = [mock_start, mock_end]
 
     class CustomMetrics(ETLResults):
         custom_field: str = "test"
@@ -214,15 +218,15 @@ def test_etl_metrics_validation(mock_post, watcher_client):
     assert result is not None
 
 
-@patch("httpx.Client.post")
-def test_etl_metrics_validation_failure(mock_post, watcher_client):
+@patch("watcher.client.Watcher._make_request")
+def test_etl_metrics_validation_failure(mock_make_request, watcher_client):
     """Test ETLResults validation failure."""
     # Mock API responses
     mock_start = Mock()
     mock_start.json.return_value = {"id": 456}
     mock_start.raise_for_status.return_value = None
 
-    mock_post.return_value = mock_start
+    mock_make_request.return_value = mock_start
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_invalid_return():
@@ -233,11 +237,11 @@ def test_etl_metrics_validation_failure(mock_post, watcher_client):
         etl_invalid_return()
 
 
-@patch("httpx.Client.post")
-def test_execution_error_handling(mock_post, watcher_client):
+@patch("watcher.client.Watcher._make_request")
+def test_execution_error_handling(mock_make_request, watcher_client):
     """Test execution error handling."""
     # Mock API failure
-    mock_post.side_effect = httpx.HTTPError("API Error")
+    mock_make_request.side_effect = httpx.HTTPError("API Error")
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_with_error():
