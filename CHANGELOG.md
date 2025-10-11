@@ -47,3 +47,6 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 - `trigger_timeliness_check(lookback_minutes)` method for triggering timeliness monitoring
 - `trigger_freshness_check()` method for triggering freshness monitoring  
 - `trigger_celery_queue_check()` method for monitoring Celery queue health
+
+## [0.1.2] - 2025-10-11
+- Renamed `ETLResults` to be singular `ETLResult`
