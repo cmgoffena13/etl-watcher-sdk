@@ -207,7 +207,7 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 <h1>Pipeline Models<a class="headerlink" href="#pipeline-models" title="Link to this heading"></a></h1>
 <section id="pipeline">
 <h2>Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading"></a></h2>
-<p>Core pipeline definition.</p>
+<p>Core pipeline definition. This information is synced with the Watcher Framework.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">pipeline_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -293,7 +293,7 @@ You can extend <code class="docutils literal notranslate"><span class="pre">ETLR
 </section>
 <section id="addresslineage">
 <h2>AddressLineage<a class="headerlink" href="#addresslineage" title="Link to this heading"></a></h2>
-<p>Defines the data lineage between source and target addresses.</p>
+<p>Defines the data lineage between source and target addresses. This information is synced with the Watcher Framework.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">source_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Address</span><span class="p">]</span>
     <span class="n">target_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Address</span><span class="p">]</span>

@@ -80,7 +80,7 @@ Pipeline Models
 Pipeline
 --------
 
-Core pipeline definition.
+Core pipeline definition. This information is synced with the Watcher Framework.
 
 .. code-block:: python
 
@@ -180,7 +180,7 @@ Unified address model for both source and target addresses.
 AddressLineage
 --------------
 
-Defines the data lineage between source and target addresses.
+Defines the data lineage between source and target addresses. This information is synced with the Watcher Framework.
 
 .. code-block:: python
 
