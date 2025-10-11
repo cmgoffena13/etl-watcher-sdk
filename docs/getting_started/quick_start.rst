@@ -74,7 +74,7 @@ This ensures your code is the source of truth for the pipeline and address linea
 
 .. warning::
 
-   This will overwrite the pipeline and address lineage configuration in the Watcher framework.
+   This will overwrite the pipeline configuration and address lineage in the Watcher framework.
 
 .. code-block:: python
 
