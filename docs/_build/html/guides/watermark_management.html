@@ -119,8 +119,8 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
     <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-etl-pipeline&quot;</span><span class="p">,</span>
         <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
-        <span class="n">default_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>
     <span class="p">),</span>
+    <span class="n">default_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>
     <span class="n">address_lineage</span><span class="o">=</span><span class="n">AddressLineage</span><span class="p">(</span>
         <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span>
             <span class="n">Address</span><span class="p">(</span>
@@ -139,7 +139,7 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
     <span class="p">),</span>
 <span class="p">)</span>
 
-<span class="n">MY_ETL_PIPELINE_CONFIG</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">next_watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">to_date_string</span><span class="p">()</span>
+<span class="n">MY_ETL_PIPELINE_CONFIG</span><span class="o">.</span><span class="n">next_watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">to_date_string</span><span class="p">()</span>
 
 <span class="n">synced_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">MY_ETL_PIPELINE_CONFIG</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline synced! New Watermark: </span><span class="si">{</span><span class="n">synced_config</span><span class="o">.</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -158,13 +158,16 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 
-<span class="n">MY_ETL_PIPELINE_CONFIG</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">next_watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">to_date_string</span><span class="p">()</span>
+<span class="n">MY_ETL_PIPELINE_CONFIG</span><span class="o">.</span><span class="n">next_watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">to_date_string</span><span class="p">()</span>
 
 <span class="n">synced_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">MY_ETL_PIPELINE_CONFIG</span><span class="p">)</span>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span>
+    <span class="n">watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">watermark</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">next_watermark</span>
+    <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">etl_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Watermark: </span><span class="si">{</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next Watermark: </span><span class="si">{</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">next_watermark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

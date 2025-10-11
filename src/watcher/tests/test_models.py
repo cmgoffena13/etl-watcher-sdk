@@ -119,12 +119,10 @@ def test_pipeline_creation():
     pipeline = Pipeline(
         name="test-pipeline",
         pipeline_type_name="data-transformation",
-        default_watermark="2024-01-01",
     )
 
     assert pipeline.name == "test-pipeline"
     assert pipeline.pipeline_type_name == "data-transformation"
-    assert pipeline.default_watermark == "2024-01-01"
 
 
 def test_pipeline_validation():
@@ -142,16 +140,38 @@ def test_pipeline_optional_fields():
     pipeline = Pipeline(
         name="test-pipeline",
         pipeline_type_name="data-transformation",
-        next_watermark="2024-01-02",
         pipeline_metadata={"version": "1.0"},
         freshness_number=30,
         timeliness_number=60,
     )
 
-    assert pipeline.next_watermark == "2024-01-02"
     assert pipeline.pipeline_metadata == {"version": "1.0"}
     assert pipeline.freshness_number == 30
     assert pipeline.timeliness_number == 60
+
+
+def test_pipeline_config_creation():
+    """Test PipelineConfig creation with watermark fields."""
+    pipeline = Pipeline(
+        name="test-pipeline",
+        pipeline_type_name="data-transformation",
+    )
+
+    address_lineage = AddressLineage(
+        source_addresses=[],
+        target_addresses=[],
+    )
+
+    config = PipelineConfig(
+        pipeline=pipeline,
+        address_lineage=address_lineage,
+        default_watermark="2024-01-01",
+        next_watermark="2024-01-02",
+    )
+
+    assert config.pipeline.name == "test-pipeline"
+    assert config.default_watermark == "2024-01-01"
+    assert config.next_watermark == "2024-01-02"
 
 
 def test_address_lineage_creation():

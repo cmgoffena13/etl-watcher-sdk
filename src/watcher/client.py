@@ -43,7 +43,8 @@ class Watcher:
         Return the pipeline config.
         """
         pipeline_input = _PipelineInput(
-            **config.pipeline.model_dump(exclude={"default_watermark"}),
+            **config.pipeline.model_dump(),
+            next_watermark=config.next_watermark,
         )
         pipeline_response = self.client.post(
             "/pipeline",
@@ -60,12 +61,14 @@ class Watcher:
                 pipeline=config.pipeline,
                 address_lineage=config.address_lineage,
                 watermark=None,
+                default_watermark=config.default_watermark,
+                next_watermark=config.next_watermark,
                 active=False,
                 id=pipeline_endpoint_response.id,
             )
 
         if pipeline_endpoint_response.watermark is None:
-            watermark = config.pipeline.default_watermark
+            watermark = config.default_watermark
         else:
             watermark = pipeline_endpoint_response.watermark
 
@@ -84,6 +87,8 @@ class Watcher:
             id=pipeline_endpoint_response.id,
             pipeline=config.pipeline,
             address_lineage=config.address_lineage,
+            default_watermark=config.default_watermark,
+            next_watermark=config.next_watermark,
             watermark=watermark,
             active=True,
         )

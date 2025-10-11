@@ -17,8 +17,8 @@ This is used to store the address lineage for your pipeline.
         pipeline=Pipeline(
             name="my-pipeline",
             pipeline_type_name="extraction",
-            default_watermark="2024-01-01",
         ),
+        default_watermark="2024-01-01",
         address_lineage=AddressLineage(
             source_addresses=[
                 Address(

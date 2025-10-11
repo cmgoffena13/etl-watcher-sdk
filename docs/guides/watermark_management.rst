@@ -23,8 +23,8 @@ to your Pipeline Config before syncing with the Watcher framework.
         pipeline=Pipeline(
             name="my-etl-pipeline",
             pipeline_type_name="extraction",
-            default_watermark="2024-01-01",
         ),
+        default_watermark="2024-01-01",
         address_lineage=AddressLineage(
             source_addresses=[
                 Address(
@@ -43,7 +43,7 @@ to your Pipeline Config before syncing with the Watcher framework.
         ),
     )
 
-    MY_ETL_PIPELINE_CONFIG.pipeline.next_watermark = pendulum.now("UTC").date().to_date_string()
+    MY_ETL_PIPELINE_CONFIG.next_watermark = pendulum.now("UTC").date().to_date_string()
         
     synced_config = watcher.sync_pipeline_config(MY_ETL_PIPELINE_CONFIG)
     print(f"Pipeline synced! New Watermark: {synced_config.watermark}")
@@ -65,13 +65,16 @@ You can access the watermarks for your pipelines by using the WatcherExecutionCo
 
     watcher = Watcher("https://api.watcher.example.com")
 
-    MY_ETL_PIPELINE_CONFIG.pipeline.next_watermark = pendulum.now("UTC").date().to_date_string()
+    MY_ETL_PIPELINE_CONFIG.next_watermark = pendulum.now("UTC").date().to_date_string()
         
     synced_config = watcher.sync_pipeline_config(MY_ETL_PIPELINE_CONFIG)
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
-        active=synced_config.active)
+        active=synced_config.active
+        watermark=synced_config.watermark
+        next_watermark=synced_config.next_watermark
+        )
     def etl_pipeline(watcher_context: WatcherExecutionContext):
         print(f"Watermark: {watcher_context.watermark}")
         print(f"Next Watermark: {watcher_context.next_watermark}")

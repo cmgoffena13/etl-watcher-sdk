@@ -7,10 +7,9 @@ from watcher.models.address_lineage import AddressLineage
 from watcher.types import DatePartEnum
 
 
-class _PipelineInput(BaseModel):
+class Pipeline(BaseModel):
     name: str = Field(max_length=150, min_length=1)
     pipeline_type_name: str = Field(max_length=150, min_length=1)
-    next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
@@ -18,8 +17,8 @@ class _PipelineInput(BaseModel):
     timeliness_datepart: Optional[DatePartEnum] = None
 
 
-class Pipeline(_PipelineInput):
-    default_watermark: Optional[Union[str, int, DateTime, Date]] = None
+class _PipelineInput(Pipeline):
+    next_watermark: Optional[Union[str, int, DateTime, Date]] = None
 
 
 class _PipelineResponse(BaseModel):
@@ -32,6 +31,8 @@ class _PipelineResponse(BaseModel):
 class PipelineConfig(BaseModel):
     pipeline: Pipeline
     address_lineage: AddressLineage
+    default_watermark: Optional[Union[str, int, DateTime, Date]] = None
+    next_watermark: Optional[Union[str, int, DateTime, Date]] = None
 
 
 class SyncedPipelineConfig(PipelineConfig):
