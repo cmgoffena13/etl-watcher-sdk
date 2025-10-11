@@ -76,7 +76,7 @@ class Watcher:
             )
 
             address_lineage_response = self.client.post(
-                "/address_lineage", json=address_lineage_data
+                "/address_lineage", json=address_lineage_data.model_dump()
             )
             address_lineage_response.raise_for_status()
 
