@@ -49,7 +49,7 @@ class Watcher:
         )
         pipeline_response = self.client.post(
             "/pipeline",
-            json=pipeline_input.model_dump(),
+            json=pipeline_input.model_dump(exclude_unset=True),
         )
         pipeline_response.raise_for_status()
         pipeline_endpoint_response = _PipelineResponse(**(pipeline_response.json()))
@@ -82,7 +82,8 @@ class Watcher:
             )
 
             address_lineage_response = self.client.post(
-                "/address_lineage", json=address_lineage_data.model_dump()
+                "/address_lineage",
+                json=address_lineage_data.model_dump(exclude_unset=True),
             )
             address_lineage_response.raise_for_status()
 
@@ -195,7 +196,7 @@ class Watcher:
 
                     end_response = self.client.post(
                         "/end_pipeline_execution",
-                        json=end_payload.model_dump(mode="json"),
+                        json=end_payload.model_dump(mode="json", exclude_unset=True),
                     )
                     end_response.raise_for_status()
 
@@ -211,7 +212,7 @@ class Watcher:
 
                     error_response = self.client.post(
                         "/end_pipeline_execution",
-                        json=error_payload.model_dump(mode="json"),
+                        json=error_payload.model_dump(mode="json", exclude_unset=True),
                     )
                     error_response.raise_for_status()
                     raise e
