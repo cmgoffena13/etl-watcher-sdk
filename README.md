@@ -1,7 +1,7 @@
 # [Watcher](https://github.com/cmgoffena13/etl-watcher) SDK
 
 [![PyPI version](https://badge.fury.io/py/etl-watcher-sdk.svg)](https://pypi.org/project/etl-watcher-sdk/)
-[![Changelog](https://img.shields.io/badge/changelog-0.1.0-blue.svg)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-0.1.16-blue.svg)](CHANGELOG.md)
 
 ## QuickStart
 

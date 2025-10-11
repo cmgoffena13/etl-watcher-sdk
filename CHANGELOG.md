@@ -1,5 +1,7 @@
 # Changelog
 
+Sections: Added, Changed, Deprecated, Removed, Fixed, Security
+
 ## [0.1.0] - 2025-10-10
 
 ### Added
@@ -19,5 +21,13 @@
 ## [0.1.1] - 2025-10-10
 
 ### Added
- - Simplified SourceAddress and TargetAddress into Address
+ - Simplified `SourceAddress` and `TargetAddress` into `Address`
  - Simplified imports so `from watcher import *` can work
+
+## [0.1.16] - 2025-10-11
+
+### Changed
+ - `ETLMetrics` is now `ETLResults`
+ - Added `completed_successfully` to `ETLResults` to account for error handling
+ - Restructured `SyncedPipelineConfig` to be more standardized
+ - Added more fields for `Address`
