@@ -63,18 +63,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#executionresult">ExecutionResult</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../api/models.html#pipeline-models">Pipeline Models</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#pipeline-configuration">Pipeline Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline">Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipelineconfig">PipelineConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#syncedpipelineconfig">SyncedPipelineConfig</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../api/models.html#address-models">Address Models</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#address-lineage">Address Lineage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#address">Address</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#addresslineage">AddressLineage</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../api/models.html#exception-models">Exception Models</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#error-handling">Error Handling</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#watcherapierror">WatcherAPIError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchernetworkerror">WatcherNetworkError</a></li>
 </ul>
@@ -153,9 +153,14 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
 <h3>Exception Handling<a class="headerlink" href="#exception-handling" title="Link to this heading"></a></h3>
 <p>The decorator handles exceptions automatically:</p>
 <ul class="simple">
-<li><p><strong>Unexpected exceptions</strong> (not handled by your code) are automatically logged as failures in the Watcher API</p></li>
-<li><p><strong>Set `completed_successfully=False`</strong> for any errors you handle internally</p></li>
+<li><p><strong>Unexpected exceptions</strong> are automatically caught, logged as failures in the Watcher API, and then re-raised</p></li>
+<li><p><strong>Set `completed_successfully=False`</strong> for business logic failures (not exceptions)</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not catch exceptions and return <cite>ETLResult</cite>. This silences the error, make sure to
+raise the exception and the decorator will automatically mark the execution as failed.</p>
+</div>
 </section>
 <section id="example-usage">
 <h3>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h3>
@@ -173,7 +178,9 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
             <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Data quality issues&quot;</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
+        <span class="c1"># Don&#39;t catch exceptions - let them bubble up to the decorator</span>
+        <span class="c1"># The decorator will automatically mark the execution as failed</span>
+        <span class="k">raise</span> <span class="n">e</span>
 
 <span class="c1"># Access results</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">etl_pipeline</span><span class="p">()</span>

@@ -18,8 +18,12 @@ Exception Handling
 
 The decorator handles exceptions automatically:
 
-- **Unexpected exceptions** (not handled by your code) are automatically logged as failures in the Watcher API
-- **Set `completed_successfully=False`** for any errors you handle internally
+- **Unexpected exceptions** are automatically caught, logged as failures in the Watcher API, and then re-raised
+- **Set `completed_successfully=False`** for business logic failures (not exceptions)
+
+.. warning::
+   Do not catch exceptions and return `ETLResult`. This silences the error, make sure to 
+   raise the exception and the decorator will automatically mark the execution as failed.
 
 Example Usage
 ~~~~~~~~~~~~~
@@ -40,7 +44,9 @@ Example Usage
                 return ETLResult(completed_successfully=False, execution_metadata={"error": "Data quality issues"})
             return ETLResult(completed_successfully=True, inserts=100, total_rows=100)
         except Exception as e:
-            return ETLResult(completed_successfully=False, execution_metadata={"exception": str(e)})
+            # Don't catch exceptions - let them bubble up to the decorator
+            # The decorator will automatically mark the execution as failed
+            raise e
 
     # Access results
     result = etl_pipeline()

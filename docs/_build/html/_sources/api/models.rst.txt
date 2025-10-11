@@ -205,7 +205,7 @@ Pipeline configuration after syncing with the Watcher API. **Extends PipelineCon
     print(f"Active: {synced_config.pipeline.active}")
     print(f"Watermark: {synced_config.watermark}")
 
-Data Lineage
+Address Lineage
 ============
 
 Address
