@@ -57,7 +57,7 @@ print(f"Pipeline synced!")
 ### Track Pipeline Execution
 
 ```python
-from watcher import Watcher, PipelineConfig, ETLMetrics
+from watcher import Watcher, PipelineConfig, ETLResults
 
 watcher = Watcher("https://api.watcher.example.com")
 
@@ -65,14 +65,16 @@ synced_config = watcher.sync_pipeline_config(MY_ETL_PIPELINE_CONFIG)
 
 @watcher.track_pipeline_execution(
     pipeline_id=synced_config.pipeline.id, 
-    active=synced_config.active
+    active=synced_config.pipeline.active
 )
 def etl_pipeline():
     print("Starting ETL pipeline")
     
     # Your ETL work here
+    # Set completed_successfully=True/False based on your logic
     
-    return ETLMetrics(
+    return ETLResults(
+        completed_successfully=True,
         inserts=100,
         total_rows=100,
         execution_metadata={"partition": "2025-01-01"},

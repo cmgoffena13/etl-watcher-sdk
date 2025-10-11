@@ -63,8 +63,13 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Execution Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#logging-executions">Logging Executions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#etl-metrics">ETL Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging-executions">Logging Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exception-handling">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-etl-results">Custom ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#etl-results">ETL Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#execution-results">Execution Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hiearchical-executions">Hiearchical Executions</a></li>
@@ -113,6 +118,36 @@ This will log the execution to the Watcher framework and return the execution id
 This execution id can be used to track the execution and retrieve the metrics.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code> decorator requires the pipeline id and active status as arguments.
 You can also pass in the <code class="docutils literal notranslate"><span class="pre">parent_execution_id</span></code>, <code class="docutils literal notranslate"><span class="pre">watermark</span></code>, and <code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> as arguments to be logged.</p>
+<section id="exception-handling">
+<h3>Exception Handling<a class="headerlink" href="#exception-handling" title="Link to this heading"></a></h3>
+<p>The decorator handles exceptions automatically:</p>
+<ul class="simple">
+<li><p><strong>Unexpected exceptions</strong> (not handled by your code) are automatically logged as failures in the Watcher API</p></li>
+<li><p><strong>Set `completed_successfully=False`</strong> for any errors you handle internally</p></li>
+</ul>
+</section>
+<section id="example-usage">
+<h3>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
+
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
+
+<span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">etl_pipeline</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Your ETL logic here</span>
+        <span class="k">if</span> <span class="n">some_condition_fails</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Data quality issues&quot;</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)})</span>
+
+<span class="c1"># Access results</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">etl_pipeline</span><span class="p">()</span>
+</pre></div>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
@@ -121,13 +156,14 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">():</span>
 
 
     <span class="c1"># Work here</span>
 
-    <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span>
@@ -136,12 +172,48 @@ You can also pass in the <code class="docutils literal notranslate"><span class=
 </pre></div>
 </div>
 </section>
-<section id="etl-metrics">
-<h2>ETL Metrics<a class="headerlink" href="#etl-metrics" title="Link to this heading"></a></h2>
-<p>The ETLMetrics is a class that is required to be returned from your pipeline function
+</section>
+<section id="custom-etl-results">
+<h2>Custom ETL Results<a class="headerlink" href="#custom-etl-results" title="Link to this heading"></a></h2>
+<p>You can extend <code class="docutils literal notranslate"><span class="pre">ETLResults</span></code> with custom fields to return additional data from your pipeline:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomETLResults</span><span class="p">(</span><span class="n">ETLResults</span><span class="p">):</span>
+    <span class="n">data_quality_score</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">():</span>
+
+    <span class="c1"># ... do work ...</span>
+
+    <span class="k">return</span> <span class="n">CustomETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">data_quality_score</span><span class="o">=</span><span class="mf">0.95</span>
+    <span class="p">)</span>
+
+<span class="c1"># Access custom fields</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Quality score: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">data_quality_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Custom fields are only accessible in your application code. Only the standard ETLResults fields
+(completed_successfully, inserts, updates, etc.) are sent to the Watcher API.</p>
+</div>
+</section>
+<section id="etl-results">
+<h2>ETL Results<a class="headerlink" href="#etl-results" title="Link to this heading"></a></h2>
+<p>The ETLResults is a class that is required to be returned from your pipeline function
 if using the <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code> decorator.
 It contains the metrics for your pipeline that are logged to the Watcher framework.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ETLMetrics</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ETLResults</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">completed_successfully</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">inserts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">updates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">soft_deletes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -150,17 +222,18 @@ It contains the metrics for your pipeline that are logged to the Watcher framewo
 </pre></div>
 </div>
 <p>Code Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLMetrics</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">():</span>
 
 
     <span class="c1"># Work here</span>
 
-    <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span>
@@ -170,32 +243,33 @@ It contains the metrics for your pipeline that are logged to the Watcher framewo
 <section id="execution-results">
 <h2>Execution Results<a class="headerlink" href="#execution-results" title="Link to this heading"></a></h2>
 <p>The ExecutionResults is a class that is returned from your pipeline function. This
-wraps around the ETLMetrics class and adds the execution id. This is to ensure access
+wraps around the ETLResults class and adds the execution id. This is to ensure access
 to the execution id for any usage.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExecutionResult</span>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ExecutionResult</span><span class="p">:</span>
 
     <span class="c1"># Work here</span>
 
-    <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+            <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
             <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="p">)</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="n">my_pipeline</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">execution_id</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">inserts</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">inserts</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You can create another Pydantic model that inherits from ETLMetrics
-and return that instead of ETLMetrics. Those fields will be accessible in
+<p>You can create another Pydantic model that inherits from ETLResults
+and return that instead of ETLResults. Those fields will be accessible in
 the ExecutionResults class that is returned from your pipeline function.</p>
 </div>
 </section>
@@ -208,7 +282,7 @@ Your function must have <cite>watcher_context</cite> as a parameter if using the
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
 
     <span class="c1"># Work here</span>
@@ -218,7 +292,8 @@ Your function must have <cite>watcher_context</cite> as a parameter if using the
     <span class="nb">print</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">next_watermark</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span>
@@ -250,12 +325,14 @@ You can provide child processes the parent execution id from the WatcherExecutio
 
         <span class="c1"># Work here</span>
 
-        <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+            <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
             <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span>
@@ -270,12 +347,13 @@ You can provide child processes the parent execution id from the WatcherExecutio
 through the Watcher framework directly as the active flag is received from the Watcher API.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
 
     <span class="c1"># Function IS SKIPPED if active is False</span>
 
-    <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span>

@@ -4,7 +4,8 @@ from pydantic import BaseModel, Field
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 
-class ETLMetrics(BaseModel):
+class ETLResults(BaseModel):
+    completed_successfully: bool
     inserts: Optional[int] = Field(default=None, ge=0)
     updates: Optional[int] = Field(default=None, ge=0)
     soft_deletes: Optional[int] = Field(default=None, ge=0)
@@ -32,4 +33,4 @@ class WatcherExecutionContext(BaseModel):
 
 class ExecutionResult(BaseModel):
     execution_id: int
-    metrics: ETLMetrics
+    results: ETLResults

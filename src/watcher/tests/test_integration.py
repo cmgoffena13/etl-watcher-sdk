@@ -4,7 +4,7 @@ import pytest
 
 from watcher.client import Watcher
 from watcher.models.address_lineage import Address, AddressLineage
-from watcher.models.execution import ETLMetrics, WatcherExecutionContext
+from watcher.models.execution import ETLResults, WatcherExecutionContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
 
@@ -90,25 +90,26 @@ def test_complete_etl_workflow(mock_post, watcher_client, integration_config):
     # Step 1: Sync pipeline configuration
     synced_config = watcher_client.sync_pipeline_config(integration_config)
     assert isinstance(synced_config, SyncedPipelineConfig)
-    assert synced_config.active is True
+    assert synced_config.pipeline.active is True
     assert synced_config.watermark == "2024-01-01"
 
     # Step 2: Define ETL function with execution tracking
     @watcher_client.track_pipeline_execution(
-        pipeline_id=synced_config.id,
-        active=synced_config.active,
+        pipeline_id=synced_config.pipeline.id,
+        active=synced_config.pipeline.active,
         watermark=synced_config.watermark,
         next_watermark="2024-01-02",
     )
     def etl_pipeline(watcher_context: WatcherExecutionContext):
         # Verify context is properly injected
         assert isinstance(watcher_context, WatcherExecutionContext)
-        assert watcher_context.pipeline_id == synced_config.id
+        assert watcher_context.pipeline_id == synced_config.pipeline.id
         assert watcher_context.watermark == "2024-01-01"
         assert watcher_context.next_watermark == "2024-01-02"
 
         # Simulate ETL work
-        return ETLMetrics(
+        return ETLResults(
+            completed_successfully=True,
             inserts=1000,
             updates=200,
             total_rows=1200,
@@ -121,9 +122,9 @@ def test_complete_etl_workflow(mock_post, watcher_client, integration_config):
     # Verify execution was tracked
     assert result is not None
     assert hasattr(result, "execution_id")
-    assert hasattr(result, "metrics")
-    assert result.metrics.inserts == 1000
-    assert result.metrics.total_rows == 1200
+    assert hasattr(result, "results")
+    assert result.results.inserts == 1000
+    assert result.results.total_rows == 1200
 
     # Verify all API calls were made
     assert mock_post.call_count == 4
@@ -177,10 +178,10 @@ def test_pipeline_chaining_workflow(
 
     # Define parent pipeline with execution tracking
     @watcher_client.track_pipeline_execution(
-        pipeline_id=synced_parent.id, active=synced_parent.active
+        pipeline_id=synced_parent.pipeline.id, active=synced_parent.pipeline.active
     )
     def parent_pipeline(watcher_context: WatcherExecutionContext):
-        return ETLMetrics(inserts=500, total_rows=500)
+        return ETLResults(completed_successfully=True, inserts=500, total_rows=500)
 
     # Execute parent pipeline
     parent_result = parent_pipeline()
@@ -207,15 +208,15 @@ def test_inactive_pipeline_workflow(mock_post, watcher_client, integration_confi
 
     # Sync inactive pipeline
     synced_config = watcher_client.sync_pipeline_config(integration_config)
-    assert synced_config.active is False
+    assert synced_config.pipeline.active is False
     assert synced_config.watermark is None  # Inactive pipelines have no watermark
 
     # Define ETL function for inactive pipeline
     @watcher_client.track_pipeline_execution(
-        pipeline_id=synced_config.id, active=synced_config.active
+        pipeline_id=synced_config.pipeline.id, active=synced_config.pipeline.active
     )
     def etl_inactive():
-        return ETLMetrics(inserts=100, total_rows=100)
+        return ETLResults(completed_successfully=True, inserts=100, total_rows=100)
 
     # Execute should return None for inactive pipeline
     result = etl_inactive()
@@ -227,7 +228,7 @@ def test_inactive_pipeline_workflow(mock_post, watcher_client, integration_confi
 
 @patch("httpx.Client.post")
 def test_custom_metrics_workflow(mock_post, watcher_client):
-    """Test workflow with custom ETLMetrics."""
+    """Test workflow with custom ETLResults."""
     # Mock API responses
     mock_start = Mock()
     mock_start.json.return_value = {"id": 456}
@@ -238,19 +239,23 @@ def test_custom_metrics_workflow(mock_post, watcher_client):
 
     mock_post.side_effect = [mock_start, mock_end]
 
-    class CustomMetrics(ETLMetrics):
+    class CustomMetrics(ETLResults):
         custom_field: str = "test"
         processing_time: float = 0.0
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_with_custom_metrics():
         return CustomMetrics(
-            inserts=100, total_rows=100, custom_field="hello", processing_time=1.5
+            completed_successfully=True,
+            inserts=100,
+            total_rows=100,
+            custom_field="hello",
+            processing_time=1.5,
         )
 
     # This should work with custom metrics
     result = etl_with_custom_metrics()
     assert result is not None
-    assert hasattr(result, "metrics")
-    assert result.metrics.custom_field == "hello"
-    assert result.metrics.processing_time == 1.5
+    assert hasattr(result, "results")
+    assert result.results.custom_field == "hello"
+    assert result.results.processing_time == 1.5

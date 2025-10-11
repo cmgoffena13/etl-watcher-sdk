@@ -3,16 +3,22 @@ from pydantic import ValidationError
 
 from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import (
-    ETLMetrics,
+    ETLResults,
     ExecutionResult,
     WatcherExecutionContext,
 )
-from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
+from watcher.models.pipeline import (
+    Pipeline,
+    PipelineConfig,
+    SyncedPipelineConfig,
+    _PipelineWithResponse,
+)
 
 
 def test_etl_metrics_creation():
-    """Test ETLMetrics creation with all fields."""
-    metrics = ETLMetrics(
+    """Test ETLResults creation with all fields."""
+    metrics = ETLResults(
+        completed_successfully=True,
         inserts=100,
         updates=50,
         soft_deletes=10,
@@ -20,6 +26,7 @@ def test_etl_metrics_creation():
         execution_metadata={"source": "database"},
     )
 
+    assert metrics.completed_successfully is True
     assert metrics.inserts == 100
     assert metrics.updates == 50
     assert metrics.soft_deletes == 10
@@ -28,9 +35,10 @@ def test_etl_metrics_creation():
 
 
 def test_etl_metrics_optional_fields():
-    """Test ETLMetrics with optional fields."""
-    metrics = ETLMetrics()
+    """Test ETLResults with optional fields."""
+    metrics = ETLResults(completed_successfully=False)
 
+    assert metrics.completed_successfully is False
     assert metrics.inserts is None
     assert metrics.updates is None
     assert metrics.soft_deletes is None
@@ -39,34 +47,37 @@ def test_etl_metrics_optional_fields():
 
 
 def test_etl_metrics_validation():
-    """Test ETLMetrics field validation."""
+    """Test ETLResults field validation."""
     # Test negative values are rejected
     with pytest.raises(ValidationError):
-        ETLMetrics(inserts=-1)
+        ETLResults(completed_successfully=True, inserts=-1)
 
     with pytest.raises(ValidationError):
-        ETLMetrics(updates=-5)
+        ETLResults(completed_successfully=True, updates=-5)
 
     with pytest.raises(ValidationError):
-        ETLMetrics(soft_deletes=-2)
+        ETLResults(completed_successfully=True, soft_deletes=-2)
 
     with pytest.raises(ValidationError):
-        ETLMetrics(total_rows=-10)
+        ETLResults(completed_successfully=True, total_rows=-10)
 
 
 def test_etl_metrics_inheritance():
-    """Test extending ETLMetrics."""
+    """Test extending ETLResults."""
 
-    class CustomMetrics(ETLMetrics):
+    class CustomMetrics(ETLResults):
         custom_field: str = "test"
         another_field: int = 42
 
-    metrics = CustomMetrics(inserts=100, custom_field="hello")
+    metrics = CustomMetrics(
+        completed_successfully=True, inserts=100, custom_field="hello"
+    )
 
+    assert metrics.completed_successfully is True
     assert metrics.inserts == 100
     assert metrics.custom_field == "hello"
     assert metrics.another_field == 42
-    assert isinstance(metrics, ETLMetrics)
+    assert isinstance(metrics, ETLResults)
 
 
 def test_execution_context_creation():
@@ -106,12 +117,12 @@ def test_execution_context_validation():
 
 def test_execution_result_creation():
     """Test ExecutionResult creation."""
-    metrics = ETLMetrics(inserts=100, total_rows=100)
-    result = ExecutionResult(execution_id=123, metrics=metrics)
+    metrics = ETLResults(completed_successfully=True, inserts=100, total_rows=100)
+    result = ExecutionResult(execution_id=123, results=metrics)
 
     assert result.execution_id == 123
-    assert result.metrics == metrics
-    assert result.metrics.inserts == 100
+    assert result.results == metrics
+    assert result.results.inserts == 100
 
 
 def test_pipeline_creation():
@@ -247,7 +258,12 @@ def test_pipeline_config_validation():
 
 def test_synced_pipeline_config_creation():
     """Test SyncedPipelineConfig creation."""
-    pipeline = Pipeline(name="test-pipeline", pipeline_type_name="data-transformation")
+    pipeline = _PipelineWithResponse(
+        name="test-pipeline",
+        pipeline_type_name="data-transformation",
+        id=123,
+        active=True,
+    )
 
     source = Address(
         name="source-db",
@@ -266,19 +282,25 @@ def test_synced_pipeline_config_creation():
         pipeline=pipeline,
         address_lineage=lineage,
         watermark="2024-01-01",
-        active=True,
-        id=123,
+        default_watermark="2024-01-01",
+        next_watermark="2024-01-02",
     )
 
     assert config.pipeline == pipeline
     assert config.address_lineage == lineage
     assert config.watermark == "2024-01-01"
-    assert config.active is True
+    assert config.pipeline.id == 123
+    assert config.pipeline.active is True
 
 
 def test_synced_pipeline_config_inactive():
     """Test SyncedPipelineConfig with inactive pipeline."""
-    pipeline = Pipeline(name="test-pipeline", pipeline_type_name="data-transformation")
+    pipeline = _PipelineWithResponse(
+        name="test-pipeline",
+        pipeline_type_name="data-transformation",
+        id=123,
+        active=False,
+    )
 
     source = Address(
         name="source-db",
@@ -297,8 +319,9 @@ def test_synced_pipeline_config_inactive():
         pipeline=pipeline,
         address_lineage=lineage,
         watermark="2024-01-01",
-        active=False,
-        id=123,
+        default_watermark="2024-01-01",
+        next_watermark="2024-01-02",
     )
 
-    assert config.active is False
+    assert config.pipeline.id == 123
+    assert config.pipeline.active is False

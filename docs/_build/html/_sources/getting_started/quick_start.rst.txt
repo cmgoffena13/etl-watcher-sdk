@@ -92,7 +92,7 @@ You can track and log the execution of your etl code by using the Watcher SDK.
 
 .. code-block:: python
 
-   from watcher import Watcher, PipelineConfig, ETLMetrics
+   from watcher import Watcher, PipelineConfig, ETLResults
    
    watcher = Watcher("https://api.watcher.example.com")
 
@@ -100,14 +100,15 @@ You can track and log the execution of your etl code by using the Watcher SDK.
 
    @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
-        active=synced_config.active
+        active=synced_config.pipeline.active
         )
    def etl_pipeline():
         print("Starting ETL pipeline")
 
         # Work
 
-        return ETLMetrics(
+        return ETLResults(
+            completed_successfully=True,
             inserts=100,
             total_rows=100,
             execution_metadata={"partition": "2025-01-01"},

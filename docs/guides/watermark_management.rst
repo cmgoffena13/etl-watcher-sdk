@@ -71,7 +71,7 @@ You can access the watermarks for your pipelines by using the WatcherExecutionCo
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
-        active=synced_config.active
+        active=synced_config.pipeline.active
         watermark=synced_config.watermark
         next_watermark=synced_config.next_watermark
         )
@@ -87,7 +87,8 @@ You can access the watermarks for your pipelines by using the WatcherExecutionCo
                 AND date_column >= '{watcher_context.watermark}'
         """
         
-        return ETLMetrics(
+        return ETLResults(
+            completed_successfully=True,
             inserts=100,
             total_rows=100,
             execution_metadata={"partition": "2025-01-01"},

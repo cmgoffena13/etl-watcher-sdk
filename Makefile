@@ -1,4 +1,4 @@
-.PHONY: format lint test docs docs-serve docs-watch upload-to-test upload docs-watch docs-serve
+.PHONY: format lint test docs docs-serve docs-watch upload-to-test upload docs-watch docs-serve install
 
 format: lint
 	uv run -- ruff format
@@ -8,6 +8,9 @@ lint:
 
 test:
 	uv run -- pytest -vv --tb=short
+
+install:
+	uv sync --frozen --compile-bytecode --all-extras
 
 build:
 	rm -rf dist/ build/ *.egg-info/

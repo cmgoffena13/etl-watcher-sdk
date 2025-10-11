@@ -62,8 +62,13 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="executions.html">Execution Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="executions.html#etl-metrics">ETL Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#exception-handling">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#custom-etl-results">Custom ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#etl-results">ETL Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#execution-results">Execution Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#hiearchical-executions">Hiearchical Executions</a></li>
@@ -164,7 +169,7 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">active</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span>
     <span class="n">watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">watermark</span>
     <span class="n">next_watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">next_watermark</span>
     <span class="p">)</span>
@@ -180,7 +185,8 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
 <span class="s2">            AND date_column &gt;= &#39;</span><span class="si">{</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&#39;</span>
 <span class="s2">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">ETLMetrics</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;partition&quot;</span><span class="p">:</span> <span class="s2">&quot;2025-01-01&quot;</span><span class="p">},</span>

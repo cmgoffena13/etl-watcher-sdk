@@ -1,7 +1,7 @@
 from watcher.client import Watcher
 from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import (
-    ETLMetrics,
+    ETLResults,
     ExecutionResult,
     WatcherExecutionContext,
 )
@@ -12,7 +12,7 @@ __all__ = [
     "PipelineConfig",
     "Pipeline",
     "SyncedPipelineConfig",
-    "ETLMetrics",
+    "ETLResults",
     "WatcherExecutionContext",
     "ExecutionResult",
     "AddressLineage",

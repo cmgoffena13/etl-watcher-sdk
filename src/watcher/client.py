@@ -8,7 +8,7 @@ from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 from watcher.models.address_lineage import _AddressLineagePostInput
 from watcher.models.execution import (
-    ETLMetrics,
+    ETLResults,
     ExecutionResult,
     WatcherExecutionContext,
     _EndPipelineExecutionInput,
@@ -18,6 +18,7 @@ from watcher.models.pipeline import (
     SyncedPipelineConfig,
     _PipelineInput,
     _PipelineResponse,
+    _PipelineWithResponse,
 )
 
 
@@ -58,13 +59,15 @@ class Watcher:
                 f"Sync operations skipped. Check pipeline status in the Watcher framework."
             )
             return SyncedPipelineConfig(
-                pipeline=config.pipeline,
+                pipeline=_PipelineWithResponse(
+                    **config.pipeline.model_dump(),
+                    id=pipeline_endpoint_response.id,
+                    active=False,
+                ),
                 address_lineage=config.address_lineage,
                 watermark=None,
                 default_watermark=config.default_watermark,
                 next_watermark=config.next_watermark,
-                active=False,
-                id=pipeline_endpoint_response.id,
             )
 
         if pipeline_endpoint_response.watermark is None:
@@ -84,13 +87,15 @@ class Watcher:
             address_lineage_response.raise_for_status()
 
         return SyncedPipelineConfig(
-            id=pipeline_endpoint_response.id,
-            pipeline=config.pipeline,
+            pipeline=_PipelineWithResponse(
+                **config.pipeline.model_dump(),
+                id=pipeline_endpoint_response.id,
+                active=True,
+            ),
             address_lineage=config.address_lineage,
             default_watermark=config.default_watermark,
             next_watermark=config.next_watermark,
             watermark=watermark,
-            active=True,
         )
 
     def track_pipeline_execution(
@@ -104,8 +109,28 @@ class Watcher:
         """
         Decorator to track pipeline execution.
         Start the pipeline execution, and end it when the function is done.
-        If the function raises an exception, end the pipeline execution with a failure.
-        If the function returns successfully, end the pipeline execution with a success.
+
+        The decorated function must return ETLResults or a model that inherits from ETLResults.
+        The ETLResults.completed_successfully field determines if the execution succeeded or failed.
+
+        Exception Handling:
+        - Unexpected exceptions (not handled by your ETL function) are logged as failures and re-raised
+        - ETL function logic failures should be handled by returning ETLResults(completed_successfully=False)
+        - You can handle errors however you want - just set completed_successfully appropriately
+
+        Example:
+            @watcher.track_pipeline_execution(pipeline_id=123)
+            def my_etl_pipeline(watcher_context: WatcherExecutionContext):
+                try:
+                    # Your ETL logic
+                    result = do_etl_work()
+                    if result.success:
+                        return ETLResults(completed_successfully=True, inserts=100)
+                    else:
+                        return ETLResults(completed_successfully=False, execution_metadata={"error": result.error})
+                except Exception as e:
+                    # Handle unexpected errors
+                    return ETLResults(completed_successfully=False, execution_metadata={"exception": str(e)})
         """
 
         def decorator(func):
@@ -146,20 +171,22 @@ class Watcher:
                     else:
                         result = func(*args, **kwargs)
 
-                    # Validate result is ETLMetrics or inherits from it
-                    if not isinstance(result, ETLMetrics):
+                    # Validate result is ETLResults or inherits from it
+                    if not isinstance(result, ETLResults):
                         raise ValueError(
-                            f"Function must return ETLMetrics or a model that inherits from ETLMetrics. "
+                            f"Function must return ETLResults or a model that inherits from ETLResults. "
                             f"Got: {type(result).__name__}"
                         )
 
                     end_payload_data = {
                         "id": execution_id,
                         "end_date": pendulum.now("UTC"),
-                        "completed_successfully": True,
+                        "completed_successfully": result.completed_successfully,
                     }
 
-                    for field in ETLMetrics.model_fields:
+                    for field in ETLResults.model_fields:
+                        if field == "completed_successfully":
+                            continue  # Already handled above
                         value = getattr(result, field)
                         if value is not None:
                             end_payload_data[field] = value
@@ -172,9 +199,10 @@ class Watcher:
                     )
                     end_response.raise_for_status()
 
-                    return ExecutionResult(execution_id=execution_id, metrics=result)
+                    return ExecutionResult(execution_id=execution_id, results=result)
 
                 except Exception as e:
+                    # Only catch unexpected exceptions (not ETL function logic failures)
                     error_payload = _EndPipelineExecutionInput(
                         id=execution_id,
                         end_date=pendulum.now("UTC"),

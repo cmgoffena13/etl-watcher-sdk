@@ -35,7 +35,11 @@ class PipelineConfig(BaseModel):
     next_watermark: Optional[Union[str, int, DateTime, Date]] = None
 
 
-class SyncedPipelineConfig(PipelineConfig):
+class _PipelineWithResponse(Pipeline):
     id: int
-    watermark: Optional[Union[str, int, DateTime, Date]] = None
     active: bool
+
+
+class SyncedPipelineConfig(PipelineConfig):
+    pipeline: _PipelineWithResponse
+    watermark: Optional[Union[str, int, DateTime, Date]] = None
