@@ -2,6 +2,7 @@ Monitoring
 ==========
 
 This guide will show you how to trigger monitoring tasks within the Watcher framework.
+It is recommeneded to trigger these checks periodically to ensure your pipelines are running as expected.
 
 Trigger Timeliness Check
 ------------------------
