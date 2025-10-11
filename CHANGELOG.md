@@ -40,3 +40,10 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 - `retry_http` decorator for custom retry behavior on HTTP calls
 - Better error handling that surfaces API error details (status codes, error codes, response text)
 - Centralized test fixtures in `conftest.py` for better test organization
+
+## [0.1.19] - 2025-10-11
+
+### Added
+- `trigger_timeliness_check(lookback_minutes)` method for triggering timeliness monitoring
+- `trigger_freshness_check()` method for triggering freshness monitoring  
+- `trigger_celery_queue_check()` method for monitoring Celery queue health
