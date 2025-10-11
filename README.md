@@ -48,7 +48,7 @@ Sync your pipeline and address lineage configuration to the Watcher framework.
 This ensures your code is the source of truth for the pipeline and address lineage configuration.
 
 ```python
-from watcher.client import Watcher
+from watcher import Watcher
 from watcher.models.pipeline import PipelineConfig
 
 watcher = Watcher("https://api.watcher.example.com")
