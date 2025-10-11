@@ -58,3 +58,8 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 ### Changed
 - Renamed `ExecutionResult.results` field to `ExecutionResult.result` for consistency
 - Made `AddressLineage` Optional in the `PipelineConfig` class
+
+## [0.1.22] - 2025-10-11
+
+### Changed
+- Renamed `WatcherExecutionContext` to `WatcherContext` for simplicity

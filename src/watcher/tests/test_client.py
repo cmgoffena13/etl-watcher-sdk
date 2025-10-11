@@ -9,7 +9,7 @@ import pytest
 
 from watcher.client import Watcher
 from watcher.models.address_lineage import Address, AddressLineage
-from watcher.models.execution import ETLResult, WatcherExecutionContext
+from watcher.models.execution import ETLResult, WatcherContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
 
@@ -140,8 +140,8 @@ def test_track_pipeline_execution_decorator_with_context(
     mock_make_request_with_retry.side_effect = [mock_start, mock_end]
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
-    def etl_with_context(watcher_context: WatcherExecutionContext):
-        assert isinstance(watcher_context, WatcherExecutionContext)
+    def etl_with_context(watcher_context: WatcherContext):
+        assert isinstance(watcher_context, WatcherContext)
         assert watcher_context.pipeline_id == 123
         return ETLResult(completed_successfully=True, inserts=100, total_rows=100)
 
@@ -224,8 +224,8 @@ def test_execution_error_handling(mock_make_request_with_retry, watcher_client):
 
 
 def test_execution_context_fields():
-    """Test WatcherExecutionContext contains expected fields."""
-    context = WatcherExecutionContext(
+    """Test WatcherContext contains expected fields."""
+    context = WatcherContext(
         execution_id=123,
         pipeline_id=456,
         watermark="2024-01-01",

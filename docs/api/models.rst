@@ -20,7 +20,7 @@ Return this from your decorated ETL functions to report execution results.
 .. code-block:: python
 
     @watcher.track_pipeline_execution(pipeline_id=123)
-    def my_etl_pipeline(watcher_context: WatcherExecutionContext):
+    def my_etl_pipeline(watcher_context: WatcherContext):
         # Your ETL logic here
         return ETLResult(
             completed_successfully=True,
@@ -38,7 +38,7 @@ You can add custom fields by extending ``ETLResult``:
         custom_metric: Optional[float] = None
         processing_time: Optional[float] = None
 
-WatcherExecutionContext
+WatcherContext
 -----------------------
 
 Context object automatically injected into your decorated ETL functions.
@@ -55,7 +55,7 @@ Context object automatically injected into your decorated ETL functions.
 .. code-block:: python
 
     @watcher.track_pipeline_execution(pipeline_id=123)
-    def my_etl_pipeline(watcher_context: WatcherExecutionContext):
+    def my_etl_pipeline(watcher_context: WatcherContext):
         print(f"Execution ID: {watcher_context.execution_id}")
         print(f"Pipeline ID: {watcher_context.pipeline_id}")
         # Use watermark for incremental processing

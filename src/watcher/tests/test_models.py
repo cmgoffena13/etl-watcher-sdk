@@ -5,7 +5,7 @@ from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import (
     ETLResult,
     ExecutionResult,
-    WatcherExecutionContext,
+    WatcherContext,
 )
 from watcher.models.pipeline import (
     Pipeline,
@@ -81,8 +81,8 @@ def test_etl_metrics_inheritance():
 
 
 def test_execution_context_creation():
-    """Test WatcherExecutionContext creation with all fields."""
-    context = WatcherExecutionContext(
+    """Test WatcherContext creation with all fields."""
+    context = WatcherContext(
         execution_id=123,
         pipeline_id=456,
         watermark="2024-01-01",
@@ -96,8 +96,8 @@ def test_execution_context_creation():
 
 
 def test_execution_context_optional_fields():
-    """Test WatcherExecutionContext with optional fields."""
-    context = WatcherExecutionContext(execution_id=123, pipeline_id=456)
+    """Test WatcherContext with optional fields."""
+    context = WatcherContext(execution_id=123, pipeline_id=456)
 
     assert context.execution_id == 123
     assert context.pipeline_id == 456
@@ -106,13 +106,13 @@ def test_execution_context_optional_fields():
 
 
 def test_execution_context_validation():
-    """Test WatcherExecutionContext field validation."""
+    """Test WatcherContext field validation."""
     # Test required fields
     with pytest.raises(ValidationError):
-        WatcherExecutionContext(execution_id=123)  # Missing pipeline_id
+        WatcherContext(execution_id=123)  # Missing pipeline_id
 
     with pytest.raises(ValidationError):
-        WatcherExecutionContext(pipeline_id=456)  # Missing execution_id
+        WatcherContext(pipeline_id=456)  # Missing execution_id
 
 
 def test_execution_result_creation():

@@ -24,7 +24,7 @@ class _EndPipelineExecutionInput(BaseModel):
     execution_metadata: Optional[dict] = None
 
 
-class WatcherExecutionContext(BaseModel):
+class WatcherContext(BaseModel):
     execution_id: int
     pipeline_id: int
     watermark: Optional[Union[str, int, DateTime, Date]] = None

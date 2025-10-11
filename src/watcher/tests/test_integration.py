@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from watcher.models.address_lineage import Address, AddressLineage
-from watcher.models.execution import ETLResult, WatcherExecutionContext
+from watcher.models.execution import ETLResult, WatcherContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
 
@@ -95,9 +95,9 @@ def test_complete_etl_workflow(
         watermark=synced_config.watermark,
         next_watermark="2024-01-02",
     )
-    def etl_pipeline(watcher_context: WatcherExecutionContext):
+    def etl_pipeline(watcher_context: WatcherContext):
         # Verify context is properly injected
-        assert isinstance(watcher_context, WatcherExecutionContext)
+        assert isinstance(watcher_context, WatcherContext)
         assert watcher_context.pipeline_id == synced_config.pipeline.id
         assert watcher_context.watermark == "2024-01-01"
         assert watcher_context.next_watermark == "2024-01-02"
@@ -175,7 +175,7 @@ def test_pipeline_chaining_workflow(
     @watcher_client.track_pipeline_execution(
         pipeline_id=synced_parent.pipeline.id, active=synced_parent.pipeline.active
     )
-    def parent_pipeline(watcher_context: WatcherExecutionContext):
+    def parent_pipeline(watcher_context: WatcherContext):
         return ETLResult(completed_successfully=True, inserts=500, total_rows=500)
 
     # Execute parent pipeline

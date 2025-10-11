@@ -4,7 +4,7 @@ from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import (
     ETLResult,
     ExecutionResult,
-    WatcherExecutionContext,
+    WatcherContext,
 )
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
 
@@ -17,7 +17,7 @@ __all__ = [
     "Pipeline",
     "SyncedPipelineConfig",
     "ETLResult",
-    "WatcherExecutionContext",
+    "WatcherContext",
     "ExecutionResult",
     "AddressLineage",
     "Address",

@@ -30,7 +30,7 @@ Example Usage
 
 .. code-block:: python
 
-    from watcher import Watcher, WatcherExecutionContext
+    from watcher import Watcher, WatcherContext
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -53,7 +53,7 @@ Example Usage
 
 .. code-block:: python
 
-    from watcher import Watcher, WatcherExecutionContext
+    from watcher import Watcher, WatcherContext
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -179,18 +179,18 @@ to the execution id for any usage.
 Watcher Execution Context
 -----------------
 
-The WatcherExecutionContext is a class that is passed to your pipeline function.
+The WatcherContext is a class that is passed to your pipeline function.
 It contains the execution id, pipeline id, watermark, and next watermark variables. 
-Your function must have `watcher_context` as a parameter if using the WatcherExecutionContext.
+Your function must have `watcher_context` as a parameter if using the WatcherContext.
 
 .. code-block:: python
 
-    from watcher import WatcherExecutionContext
+    from watcher import WatcherContext
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
         active=synced_config.pipeline.active)
-    def my_pipeline(watcher_context: WatcherExecutionContext):
+    def my_pipeline(watcher_context: WatcherContext):
 
         # Work here
 
@@ -210,11 +210,11 @@ Hiearchical Executions
 -----------------------
 
 You can log hierarchical executions by using the ``track_pipeline_execution`` decorator.
-You can provide child processes the parent execution id from the WatcherExecutionContext.
+You can provide child processes the parent execution id from the WatcherContext.
 
 .. code-block:: python
 
-    from watcher import Watcher, WatcherExecutionContext
+    from watcher import Watcher, WatcherContext
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -223,7 +223,7 @@ You can provide child processes the parent execution id from the WatcherExecutio
     @watcher.track_pipeline_execution(
         pipeline_id=synced_parent_config.pipeline.id, 
         active=synced_parent_config.active)
-    def my_parent_pipeline(watcher_context: WatcherExecutionContext):
+    def my_parent_pipeline(watcher_context: WatcherContext):
 
         synced_child_config = watcher.sync_pipeline_config(MY_CHILD_PIPELINE_CONFIG)
 
@@ -260,7 +260,7 @@ through the Watcher framework directly as the active flag is received from the W
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
         active=synced_config.pipeline.active)
-    def my_pipeline(watcher_context: WatcherExecutionContext):
+    def my_pipeline(watcher_context: WatcherContext):
 
         # Function IS SKIPPED if active is False
 

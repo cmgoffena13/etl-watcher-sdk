@@ -11,7 +11,7 @@ from watcher.models.address_lineage import _AddressLineagePostInput
 from watcher.models.execution import (
     ETLResult,
     ExecutionResult,
-    WatcherExecutionContext,
+    WatcherContext,
     _EndPipelineExecutionInput,
 )
 from watcher.models.pipeline import (
@@ -139,7 +139,7 @@ class Watcher:
 
         Example:
             @watcher.track_pipeline_execution(pipeline_id=123)
-            def my_etl_pipeline(watcher_context: WatcherExecutionContext):
+            def my_etl_pipeline(watcher_context: WatcherContext):
                 try:
                     # Your ETL logic
                     result = do_etl_work()
@@ -181,7 +181,7 @@ class Watcher:
                 try:
                     sig = inspect.signature(func)
                     if "watcher_context" in sig.parameters:
-                        watcher_context = WatcherExecutionContext(
+                        watcher_context = WatcherContext(
                             execution_id=execution_id,
                             pipeline_id=pipeline_id,
                             watermark=watermark,

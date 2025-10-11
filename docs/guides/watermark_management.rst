@@ -57,11 +57,11 @@ For the first run, the watermark will be the default watermark. Then, it will be
 Accessing Watermarks
 --------------------
 
-You can access the watermarks for your pipelines by using the WatcherExecutionContext.
+You can access the watermarks for your pipelines by using the WatcherContext.
 
 .. code-block:: python
     
-    from watcher import Watcher, PipelineConfig, WatcherExecutionContext
+    from watcher import Watcher, PipelineConfig, WatcherContext
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -75,7 +75,7 @@ You can access the watermarks for your pipelines by using the WatcherExecutionCo
         watermark=synced_config.watermark
         next_watermark=synced_config.next_watermark
         )
-    def etl_pipeline(watcher_context: WatcherExecutionContext):
+    def etl_pipeline(watcher_context: WatcherContext):
         print(f"Watermark: {watcher_context.watermark}")
         print(f"Next Watermark: {watcher_context.next_watermark}")
 
@@ -101,4 +101,4 @@ Watermark Data Type
 
 The watermark data type is stored as a string in the Watcher framework to allow for flexibility.
 It is important to be aware of the data types you are using in your code 
-and to properly cast it once accessed from the WatcherExecutionContext.
+and to properly cast it once accessed from the WatcherContext.
