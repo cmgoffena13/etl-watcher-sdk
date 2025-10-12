@@ -30,7 +30,7 @@ Example Usage
 
 .. code-block:: python
 
-    from watcher import Watcher, WatcherExecutionContext
+    from watcher import Watcher, WatcherContext
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -53,7 +53,7 @@ Example Usage
 
 .. code-block:: python
 
-    from watcher import Watcher, WatcherExecutionContext
+    from watcher import Watcher, WatcherContext
 
     watcher = Watcher("https://api.watcher.example.com")
 
@@ -176,21 +176,109 @@ to the execution id for any usage.
     print(output.result)
     print(output.result.inserts)
 
-Watcher Execution Context
------------------
+Hierarchical Executions
+------------------------
 
-The WatcherExecutionContext is a class that is passed to your pipeline function.
-It contains the execution id, pipeline id, watermark, and next watermark variables. 
-Your function must have `watcher_context` as a parameter if using the WatcherExecutionContext.
+For parent-child execution relationships, you have two options:
+
+**Option 1: track_child_pipeline_execution() method (Recommended)**
 
 .. code-block:: python
 
-    from watcher import WatcherExecutionContext
+    from etl_watcher_sdk import Watcher, ETLResult, WatcherContext
+
+    watcher = Watcher(api_key="your-api-key", base_url="https://api.example.com")
+
+    def process_ticker_data(ticker: str, watcher_context: WatcherContext) -> ETLResult:
+        # Child function that processes individual ticker data
+        print(f"Processing {ticker} with watermark: {watcher_context.watermark}")
+        
+        return ETLResult(
+            completed_successfully=True,
+            total_rows=100,
+            inserts=100,
+            execution_metadata={"ticker": ticker, "batch_id": "123"}
+        )
+
+    @watcher.track_pipeline_execution(pipeline_id=123)
+    def main_etl_pipeline(watcher_context: WatcherContext) -> ETLResult:
+        tickers = ["AAPL", "GOOGL", "MSFT"]
+        total_processed = 0
+        
+        for ticker in tickers:
+            # One line - calls function and tracks as child execution
+            child_result = watcher.track_child_pipeline_execution(
+                pipeline_id=456,
+                active=True,
+                parent_execution_id=watcher_context.execution_id,
+                func=process_ticker_data,
+                ticker=ticker,
+                watermark=watcher_context.watermark,
+                next_watermark=watcher_context.next_watermark
+            )
+            
+            total_processed += child_result.result.total_rows
+            print(f"Child execution {child_result.execution_id} processed {child_result.result.total_rows} rows")
+        
+        return ETLResult(completed_successfully=True, total_rows=total_processed)
+
+.. note::
+    The function that is called by ``track_child_pipeline_execution`` 
+    must return an ``ETLResult`` or a model that inherits from ``ETLResult``. 
+    It also must not be decorated with ``track_pipeline_execution``.
+
+**Option 2: Nested decorators (for small functions)**
+
+.. code-block:: python
+
+    @watcher.track_pipeline_execution(pipeline_id=parent_pipeline_id, active=True)
+    def parent_pipeline(watcher_context: WatcherContext):
+        # Parent logic here
+        
+        @watcher.track_pipeline_execution(
+            pipeline_id=child_pipeline_id, 
+            active=True,
+            parent_execution_id=watcher_context.execution_id
+        )
+        def child_pipeline():
+            # Child logic here
+            return ETLResult(completed_successfully=True, total_rows=100)
+        
+        child_pipeline()  # Call the child
+        return ETLResult(completed_successfully=True, total_rows=200)
+
+**Method Parameters (Option 1):**
+
+- ``pipeline_id`` (int) - ID of the child pipeline (from child config)
+- ``active`` (bool) - Whether the pipeline is active (from child config)
+- ``parent_execution_id`` (int) - ID of the parent execution (from watcher_context)
+- ``func`` (callable) - Function to execute as child execution
+- ``*args, **kwargs`` - Arguments to pass to the function
+- ``watermark`` (optional) - Watermark to pass to the child execution (from child config)
+- ``next_watermark`` (optional) - Next watermark to pass to the child execution (from child config)
+
+**Key Features:**
+
+- **Automatic WatcherContext injection** - If your function has a `watcher_context` parameter, it gets injected automatically
+- **Full ETLResult logging** - Captures and logs all metrics (inserts, updates, total_rows, etc.)
+- **Error handling** - Automatically marks as failed if exception occurs
+- **Watermark support** - Child functions can access watermarks via `watcher_context`
+
+Watcher Execution Context
+-----------------
+
+The WatcherContext is a class that is passed to your pipeline function.
+It contains the execution id, pipeline id, watermark, and next watermark variables. 
+Your function must have `watcher_context` as a parameter if using the WatcherContext.
+
+.. code-block:: python
+
+    from watcher import WatcherContext
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
         active=synced_config.pipeline.active)
-    def my_pipeline(watcher_context: WatcherExecutionContext):
+    def my_pipeline(watcher_context: WatcherContext):
 
         # Work here
 
@@ -206,49 +294,6 @@ Your function must have `watcher_context` as a parameter if using the WatcherExe
         )
         
 
-Hiearchical Executions
------------------------
-
-You can log hierarchical executions by using the ``track_pipeline_execution`` decorator.
-You can provide child processes the parent execution id from the WatcherExecutionContext.
-
-.. code-block:: python
-
-    from watcher import Watcher, WatcherExecutionContext
-
-    watcher = Watcher("https://api.watcher.example.com")
-
-    synced_parent_config = watcher.sync_pipeline_config(MY_PARENT_PIPELINE_CONFIG)
-
-    @watcher.track_pipeline_execution(
-        pipeline_id=synced_parent_config.pipeline.id, 
-        active=synced_parent_config.active)
-    def my_parent_pipeline(watcher_context: WatcherExecutionContext):
-
-        synced_child_config = watcher.sync_pipeline_config(MY_CHILD_PIPELINE_CONFIG)
-
-        @watcher.track_pipeline_execution(
-            pipeline_id=synced_child_config.pipeline.id, 
-            active=synced_child_config.active
-            parent_execution_id=watcher_context.execution_id)
-        child_pipeline():
-
-            # Work here
-
-            return ETLResult(
-                completed_successfully=True,
-                inserts=100,
-                total_rows=100,
-            )
-        
-        return ETLResult(
-            completed_successfully=True,
-            inserts=100,
-            total_rows=100,
-        )
-
-    my_parent_pipeline()
-
 Active Flag
 -----------
 
@@ -260,7 +305,7 @@ through the Watcher framework directly as the active flag is received from the W
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id, 
         active=synced_config.pipeline.active)
-    def my_pipeline(watcher_context: WatcherExecutionContext):
+    def my_pipeline(watcher_context: WatcherContext):
 
         # Function IS SKIPPED if active is False
 

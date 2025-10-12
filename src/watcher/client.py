@@ -1,5 +1,6 @@
 import inspect
 import warnings
+from contextlib import contextmanager
 from typing import Optional, Union
 
 import httpx
@@ -213,7 +214,7 @@ class Watcher:
 
                     end_payload = _EndPipelineExecutionInput(**end_payload_data)
 
-                    end_response = self._make_request(
+                    self._make_request(
                         "POST",
                         "/end_pipeline_execution",
                         json=end_payload.model_dump(mode="json", exclude_unset=True),
@@ -222,14 +223,13 @@ class Watcher:
                     return ExecutionResult(execution_id=execution_id, result=result)
 
                 except Exception as e:
-                    # Only catch unexpected exceptions (not ETL function logic failures)
                     error_payload = _EndPipelineExecutionInput(
                         id=execution_id,
                         end_date=pendulum.now("UTC"),
                         completed_successfully=False,
                     )
 
-                    error_response = self._make_request(
+                    self._make_request(
                         "POST",
                         "/end_pipeline_execution",
                         json=error_payload.model_dump(mode="json", exclude_unset=True),
@@ -239,6 +239,98 @@ class Watcher:
             return wrapper
 
         return decorator
+
+    def track_child_pipeline_execution(
+        self,
+        pipeline_id: int,
+        active: bool,
+        parent_execution_id: int,
+        func,
+        watermark: Optional[Union[str, int, DateTime, Date]] = None,
+        next_watermark: Optional[Union[str, int, DateTime, Date]] = None,
+        *args,
+        **kwargs,
+    ):
+        """Track a child execution. Call a function and capture its ETLResult."""
+        if active is False:
+            warnings.warn(f"Pipeline {pipeline_id} is not active - aborting execution")
+            return None
+
+        start_execution = {
+            "pipeline_id": pipeline_id,
+            "parent_id": parent_execution_id,
+            "start_date": pendulum.now("UTC").isoformat(),
+        }
+        if watermark is not None:
+            start_execution["watermark"] = watermark
+        if next_watermark is not None:
+            start_execution["next_watermark"] = next_watermark
+
+        start_response = self._make_request(
+            "POST",
+            "/start_pipeline_execution",
+            json=start_execution,
+        )
+        execution_id = start_response.json()["id"]
+
+        try:
+            # Check if function expects WatcherContext (same as decorator)
+            sig = inspect.signature(func)
+            if "watcher_context" in sig.parameters:
+                watcher_context = WatcherContext(
+                    execution_id=execution_id,
+                    pipeline_id=pipeline_id,
+                    watermark=watermark,
+                    next_watermark=next_watermark,
+                )
+                result = func(watcher_context, *args, **kwargs)
+            else:
+                result = func(*args, **kwargs)
+
+            # Validate result is ETLResult or inherits from it
+            if not isinstance(result, ETLResult):
+                raise ValueError(
+                    f"Function must return ETLResult or a model that inherits from ETLResult. "
+                    f"Got: {type(result).__name__}"
+                )
+
+            # End execution with actual ETLResult data (same as decorator)
+            end_payload_data = {
+                "id": execution_id,
+                "end_date": pendulum.now("UTC"),
+                "completed_successfully": result.completed_successfully,
+            }
+
+            for field in ETLResult.model_fields:
+                if field == "completed_successfully":
+                    continue  # Already handled above
+                value = getattr(result, field)
+                if value is not None:
+                    end_payload_data[field] = value
+
+            end_payload = _EndPipelineExecutionInput(**end_payload_data)
+
+            self._make_request(
+                "POST",
+                "/end_pipeline_execution",
+                json=end_payload.model_dump(mode="json", exclude_unset=True),
+            )
+
+            return ExecutionResult(execution_id=execution_id, result=result)
+
+        except Exception as e:
+            # Failure - end execution (same as decorator)
+            error_payload = _EndPipelineExecutionInput(
+                id=execution_id,
+                end_date=pendulum.now("UTC"),
+                completed_successfully=False,
+            )
+            self._make_request(
+                "POST",
+                "/end_pipeline_execution",
+                json=error_payload.model_dump(mode="json", exclude_unset=True),
+            )
+            raise e
 
     def trigger_timeliness_check(self, lookback_minutes: int):
         self._make_request(

@@ -63,3 +63,8 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 
 ### Changed
 - Renamed `WatcherExecutionContext` to `WatcherContext` for simplicity
+
+## [0.1.23] - 2025-10-11
+
+### Added
+- Added `track_child_pipeline_execution` method to better handle hierachical execution

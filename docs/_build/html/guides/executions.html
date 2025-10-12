@@ -59,7 +59,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api/models.html">Core Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#etlresult">ETLResult</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watcherexecutioncontext">WatcherExecutionContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchercontext">WatcherContext</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#executionresult">ExecutionResult</a></li>
 </ul>
 </li>
@@ -96,8 +96,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#custom-etl-results">Custom ETL Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#etl-results">ETL Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#execution-results">Execution Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hierarchical-executions">Hierarchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watcher-execution-context">Watcher Execution Context</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hiearchical-executions">Hiearchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#active-flag">Active Flag</a></li>
 </ul>
 </li>
@@ -164,7 +164,7 @@ raise the exception and the decorator will automatically mark the execution as f
 </section>
 <section id="example-usage">
 <h3>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherContext</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 
@@ -186,7 +186,7 @@ raise the exception and the decorator will automatically mark the execution as f
 <span class="n">result</span> <span class="o">=</span> <span class="n">etl_pipeline</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherContext</span>
 
 <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
 
@@ -305,17 +305,101 @@ to the execution id for any usage.</p>
 </pre></div>
 </div>
 </section>
+<section id="hierarchical-executions">
+<h2>Hierarchical Executions<a class="headerlink" href="#hierarchical-executions" title="Link to this heading"></a></h2>
+<p>For parent-child execution relationships, you have two options:</p>
+<p><strong>Option 1: track_child_pipeline_execution() method (Recommended)</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">etl_watcher_sdk</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">ETLResult</span><span class="p">,</span> <span class="n">WatcherContext</span>
+
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;your-api-key&quot;</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://api.example.com&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">process_ticker_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ETLResult</span><span class="p">:</span>
+    <span class="c1"># Child function that processes individual ticker data</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="s2"> with watermark: </span><span class="si">{</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ticker&quot;</span><span class="p">:</span> <span class="n">ticker</span><span class="p">,</span> <span class="s2">&quot;batch_id&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main_etl_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ETLResult</span><span class="p">:</span>
+    <span class="n">tickers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AAPL&quot;</span><span class="p">,</span> <span class="s2">&quot;GOOGL&quot;</span><span class="p">,</span> <span class="s2">&quot;MSFT&quot;</span><span class="p">]</span>
+    <span class="n">total_processed</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+        <span class="c1"># One line - calls function and tracks as child execution</span>
+        <span class="n">child_result</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">track_child_pipeline_execution</span><span class="p">(</span>
+            <span class="n">pipeline_id</span><span class="o">=</span><span class="mi">456</span><span class="p">,</span>
+            <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">execution_id</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">process_ticker_data</span><span class="p">,</span>
+            <span class="n">ticker</span><span class="o">=</span><span class="n">ticker</span><span class="p">,</span>
+            <span class="n">watermark</span><span class="o">=</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="p">,</span>
+            <span class="n">next_watermark</span><span class="o">=</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">next_watermark</span>
+        <span class="p">)</span>
+
+        <span class="n">total_processed</span> <span class="o">+=</span> <span class="n">child_result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">total_rows</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Child execution </span><span class="si">{</span><span class="n">child_result</span><span class="o">.</span><span class="n">execution_id</span><span class="si">}</span><span class="s2"> processed </span><span class="si">{</span><span class="n">child_result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">total_rows</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">total_rows</span><span class="o">=</span><span class="n">total_processed</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function that is called by <code class="docutils literal notranslate"><span class="pre">track_child_pipeline_execution</span></code>
+must return an <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code> or a model that inherits from <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code>.
+It also must not be decorated with <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code>.</p>
+</div>
+<p><strong>Option 2: Nested decorators (for small functions)</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="n">parent_pipeline_id</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parent_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">):</span>
+    <span class="c1"># Parent logic here</span>
+
+    <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
+        <span class="n">pipeline_id</span><span class="o">=</span><span class="n">child_pipeline_id</span><span class="p">,</span>
+        <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">execution_id</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">child_pipeline</span><span class="p">():</span>
+        <span class="c1"># Child logic here</span>
+        <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="n">child_pipeline</span><span class="p">()</span>  <span class="c1"># Call the child</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">total_rows</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Method Parameters (Option 1):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int) - ID of the child pipeline (from child config)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool) - Whether the pipeline is active (from child config)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_execution_id</span></code> (int) - ID of the parent execution (from watcher_context)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">func</span></code> (callable) - Function to execute as child execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*args,</span> <span class="pre">**kwargs</span></code> - Arguments to pass to the function</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (optional) - Watermark to pass to the child execution (from child config)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (optional) - Next watermark to pass to the child execution (from child config)</p></li>
+</ul>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Automatic WatcherContext injection</strong> - If your function has a <cite>watcher_context</cite> parameter, it gets injected automatically</p></li>
+<li><p><strong>Full ETLResult logging</strong> - Captures and logs all metrics (inserts, updates, total_rows, etc.)</p></li>
+<li><p><strong>Error handling</strong> - Automatically marks as failed if exception occurs</p></li>
+<li><p><strong>Watermark support</strong> - Child functions can access watermarks via <cite>watcher_context</cite></p></li>
+</ul>
+</section>
 <section id="watcher-execution-context">
 <h2>Watcher Execution Context<a class="headerlink" href="#watcher-execution-context" title="Link to this heading"></a></h2>
-<p>The WatcherExecutionContext is a class that is passed to your pipeline function.
+<p>The WatcherContext is a class that is passed to your pipeline function.
 It contains the execution id, pipeline id, watermark, and next watermark variables.
-Your function must have <cite>watcher_context</cite> as a parameter if using the WatcherExecutionContext.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">WatcherExecutionContext</span>
+Your function must have <cite>watcher_context</cite> as a parameter if using the WatcherContext.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">WatcherContext</span>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
     <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">):</span>
 
     <span class="c1"># Work here</span>
 
@@ -332,47 +416,6 @@ Your function must have <cite>watcher_context</cite> as a parameter if using the
 </pre></div>
 </div>
 </section>
-<section id="hiearchical-executions">
-<h2>Hiearchical Executions<a class="headerlink" href="#hiearchical-executions" title="Link to this heading"></a></h2>
-<p>You can log hierarchical executions by using the <code class="docutils literal notranslate"><span class="pre">track_pipeline_execution</span></code> decorator.
-You can provide child processes the parent execution id from the WatcherExecutionContext.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
-
-<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
-
-<span class="n">synced_parent_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">MY_PARENT_PIPELINE_CONFIG</span><span class="p">)</span>
-
-<span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
-    <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_parent_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-    <span class="n">active</span><span class="o">=</span><span class="n">synced_parent_config</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_parent_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
-
-    <span class="n">synced_child_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">MY_CHILD_PIPELINE_CONFIG</span><span class="p">)</span>
-
-    <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
-        <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_child_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-        <span class="n">active</span><span class="o">=</span><span class="n">synced_child_config</span><span class="o">.</span><span class="n">active</span>
-        <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">execution_id</span><span class="p">)</span>
-    <span class="n">child_pipeline</span><span class="p">():</span>
-
-        <span class="c1"># Work here</span>
-
-        <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
-            <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-            <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
-        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="n">total_rows</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="p">)</span>
-
-<span class="n">my_parent_pipeline</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
 <section id="active-flag">
 <h2>Active Flag<a class="headerlink" href="#active-flag" title="Link to this heading"></a></h2>
 <p>You can set a Pipeline’s active flag to False to skip the execution. This is normally triggered
@@ -380,7 +423,7 @@ through the Watcher framework directly as the active flag is received from the W
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
     <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_pipeline</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">):</span>
 
     <span class="c1"># Function IS SKIPPED if active is False</span>
 
