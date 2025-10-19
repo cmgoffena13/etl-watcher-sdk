@@ -11,6 +11,7 @@ class Address(BaseModel):
     schema_name: Optional[str] = Field(None, max_length=50)
     table_name: Optional[str] = Field(None, max_length=50)
     primary_key: Optional[str] = Field(None, max_length=50)
+    address_metadata: Optional[dict] = None
 
 
 class AddressLineage(BaseModel):

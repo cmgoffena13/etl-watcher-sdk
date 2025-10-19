@@ -97,7 +97,7 @@ class Watcher:
         if pipeline_endpoint_response.load_lineage:
             address_lineage_data = _AddressLineagePostInput(
                 pipeline_id=pipeline_endpoint_response.id,
-                **config.address_lineage.model_dump(),
+                **config.address_lineage.model_dump(exclude_unset=True),
             )
 
             self._make_request(
