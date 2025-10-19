@@ -68,3 +68,8 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 
 ### Added
 - Added `track_child_pipeline_execution` method to better handle hierachical execution
+
+## [0.1.24] - 2025-10-19
+
+### Added
+- Added `address_metadata` to PipelineConfig
