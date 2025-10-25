@@ -1,4 +1,6 @@
-.PHONY: format lint test docs docs-serve docs-watch upload-to-test upload docs-watch docs-serve install
+.PHONY: format lint test docs docs-serve docs-watch upload-to-test upload publish docs-watch docs-serve install
+
+version ?= $(shell grep '^version =' pyproject.toml | cut -d'"' -f2)
 
 format: lint
 	uv run -- ruff format
@@ -30,3 +32,8 @@ docs-serve:
 
 docs-watch:
 	uv run sphinx-autobuild docs docs/_build/html --watch src/ --port 8080
+
+publish: format test docs build upload
+	git tag -a v$(version) -m "Release v$(version)"
+	git push origin v$(version)
+	git push origin main
