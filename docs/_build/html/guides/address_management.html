@@ -9,6 +9,7 @@
   <title>Address Management &mdash; Watcher SDK 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c4a40db5" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -20,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Execution Management" href="executions.html" />
-    <link rel="prev" title="Quick Start Guide" href="../getting_started/quick_start.html" /> 
+    <link rel="prev" title="Core Models" href="../api/models.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,6 +56,31 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Core Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#etlresult">ETLResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchercontext">WatcherContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#executionresult">ExecutionResult</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#pipeline-configuration">Pipeline Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipelineconfig">PipelineConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#syncedpipelineconfig">SyncedPipelineConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#address-lineage">Address Lineage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#address">Address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#addresslineage">AddressLineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watcherapierror">WatcherAPIError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchernetworkerror">WatcherNetworkError</a></li>
+</ul>
+</li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Address Management</a><ul>
@@ -63,12 +89,23 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="executions.html">Execution Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="executions.html#etl-metrics">ETL Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#exception-handling">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#custom-etl-results">Custom ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#etl-results">ETL Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#execution-results">Execution Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#hierarchical-executions">Hierarchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
-<li class="toctree-l2"><a class="reference internal" href="executions.html#hiearchical-executions">Hiearchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
@@ -157,7 +194,7 @@ the load_lineage flag is set to False. It can be set to True again through the W
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../getting_started/quick_start.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/models.html" class="btn btn-neutral float-left" title="Core Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="executions.html" class="btn btn-neutral float-right" title="Execution Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
