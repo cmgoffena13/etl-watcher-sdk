@@ -14,6 +14,9 @@ test:
 install:
 	uv sync --frozen --compile-bytecode --all-extras
 
+upgrade:
+	uv sync --upgrade --all-extras
+
 build:
 	rm -rf dist/ build/ *.egg-info/
 	uv build
