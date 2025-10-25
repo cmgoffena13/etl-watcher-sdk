@@ -7,6 +7,7 @@ from watcher.models.execution import (
     WatcherContext,
 )
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
+from watcher.orchestration import OrchestratedETL
 
 __all__ = [
     "Watcher",
@@ -21,4 +22,5 @@ __all__ = [
     "ExecutionResult",
     "AddressLineage",
     "Address",
+    "OrchestratedETL",
 ]

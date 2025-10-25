@@ -55,3 +55,4 @@ You can install the Watcher SDK using your preferred package manager:
    guides/executions
    guides/monitoring
    guides/watermark_management
+   guides/orchestration

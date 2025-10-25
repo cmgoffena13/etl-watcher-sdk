@@ -73,3 +73,12 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 
 ### Added
 - Added `address_metadata` to PipelineConfig
+
+## [0.1.3] - 2025-10-25
+
+### Added
+- Added `OrchestratedETL` class for Dagster and Airflow integration
+- Added `OrchestrationContext` for framework-specific metadata detection
+- Added parent execution tracking with `start_parent_execution` and `end_parent_execution` methods
+- Added orchestration context injection into ETL metadata
+- Added comprehensive documentation for orchestration integration

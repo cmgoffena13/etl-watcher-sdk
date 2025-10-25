@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orchestration Integration &mdash; Watcher SDK 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Watermark Management" href="watermark_management.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Watcher SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#store-pipeline-and-address-lineage-configuration">Store Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#sync-pipeline-and-address-lineage-configuration">Sync Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#track-pipeline-execution">Track Pipeline Execution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Core Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#etlresult">ETLResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchercontext">WatcherContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#executionresult">ExecutionResult</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#pipeline-configuration">Pipeline Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipelineconfig">PipelineConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#syncedpipelineconfig">SyncedPipelineConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#address-lineage">Address Lineage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#address">Address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#addresslineage">AddressLineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watcherapierror">WatcherAPIError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchernetworkerror">WatcherNetworkError</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="address_management.html">Address Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="address_management.html#address-lineage-configuration">Address Lineage Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_management.html#loading-address-lineage">Loading Address Lineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="executions.html">Execution Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#exception-handling">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#custom-etl-results">Custom ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#etl-results">ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#execution-results">Execution Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#hierarchical-executions">Hierarchical Executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#incrementing-watermarks">Incrementing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#accessing-watermarks">Accessing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#watermark-data-type">Watermark Data Type</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Orchestration Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dagster-integration">Dagster Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#airflow-integration">Airflow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#watermark-management">Watermark Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#context-detection">Context Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metadata-injection">Metadata Injection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-complete-dagster-pipeline-with-parent-execution-tracking">Example: Complete Dagster Pipeline with Parent Execution Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-complete-airflow-dag-with-parent-execution-tracking">Example: Complete Airflow DAG with Parent Execution Tracking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Watcher SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Orchestration Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/orchestration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="orchestration-integration">
+<h1>Orchestration Integration<a class="headerlink" href="#orchestration-integration" title="Link to this heading"></a></h1>
+<p>The ETL Watcher SDK provides seamless integration with popular orchestration frameworks like Dagster and Airflow through the <code class="docutils literal notranslate"><span class="pre">OrchestratedETL</span></code> class.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The orchestration integration allows you to:</p>
+<ul class="simple">
+<li><p>Use your existing ETL functions with orchestration frameworks</p></li>
+<li><p>Automatically inject orchestration context into your ETL metadata</p></li>
+<li><p>Maintain compatibility with both Dagster and Airflow</p></li>
+<li><p>Track ETL execution metrics through the Watcher API</p></li>
+</ul>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">OrchestratedETL</span></code> class provides a unified interface for running ETL pipelines with orchestration context:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratedETL</span><span class="p">,</span> <span class="n">ETLResult</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="c1"># Define your ETL function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_etl_function</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1"># Your ETL logic here</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">()</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">inserts</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">processed</span><span class="p">),</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">}</span>
+    <span class="p">)</span>
+
+<span class="c1"># Create orchestrated ETL</span>
+<span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_pipeline&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;batch_etl&quot;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span>
+    <span class="n">watcher_url</span><span class="o">=</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">,</span>
+    <span class="n">pipeline_config</span><span class="o">=</span><span class="n">pipeline_config</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">my_etl_function</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dagster-integration">
+<h2>Dagster Integration<a class="headerlink" href="#dagster-integration" title="Link to this heading"></a></h2>
+<p>For Dagster, you can use the <code class="docutils literal notranslate"><span class="pre">OrchestratedETL</span></code> class directly in your ops:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dagster</span><span class="w"> </span><span class="kn">import</span> <span class="n">op</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">OpExecutionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratedETL</span><span class="p">,</span> <span class="n">ETLResult</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="c1"># Define your ETL function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_and_transform</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ETLResult</span><span class="p">:</span>
+    <span class="c1"># Your ETL logic</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">()</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">inserts</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">processed</span><span class="p">),</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c1"># Create Dagster op</span>
+<span class="nd">@op</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_etl_op</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">OpExecutionContext</span><span class="p">):</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">extract_and_transform</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="airflow-integration">
+<h2>Airflow Integration<a class="headerlink" href="#airflow-integration" title="Link to this heading"></a></h2>
+<p>For Airflow, you can use the <code class="docutils literal notranslate"><span class="pre">OrchestratedETL</span></code> class in your tasks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">airflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.operators.python</span><span class="w"> </span><span class="kn">import</span> <span class="n">PythonOperator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratedETL</span><span class="p">,</span> <span class="n">ETLResult</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="c1"># Define your ETL function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_and_transform</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ETLResult</span><span class="p">:</span>
+    <span class="c1"># Your ETL logic</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">()</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">inserts</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">processed</span><span class="p">),</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c1"># Create Airflow task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_etl_task</span><span class="p">(</span><span class="o">**</span><span class="n">context</span><span class="p">):</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">extract_and_transform</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
+<section id="watermark-management">
+<h3>Watermark Management<a class="headerlink" href="#watermark-management" title="Link to this heading"></a></h3>
+<p>The orchestration integration supports watermark management for incremental processing. Watermarks are automatically available in the <cite>watcher_context</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_etl_function</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ETLResult</span><span class="p">:</span>
+    <span class="c1"># Access current watermark for incremental processing</span>
+    <span class="n">current_watermark</span> <span class="o">=</span> <span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span>
+    <span class="n">next_watermark</span> <span class="o">=</span> <span class="n">watcher_context</span><span class="o">.</span><span class="n">next_watermark</span>
+
+    <span class="c1"># Process data from watermark onwards</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">extract_data_since</span><span class="p">(</span><span class="n">current_watermark</span><span class="p">,</span> <span class="n">next_watermark</span><span class="p">)</span>
+
+    <span class="c1"># The next watermark is automatically set by the SDK</span>
+    <span class="c1"># based on the pipeline configuration</span>
+
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">inserts</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c1"># Execute ETL with orchestration context</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">my_etl_function</span><span class="p">,</span> <span class="n">orchestration_context</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="context-detection">
+<h3>Context Detection<a class="headerlink" href="#context-detection" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">OrchestratedETL</span></code> class automatically detects orchestration context from:</p>
+<ul class="simple">
+<li><p><strong>Dagster</strong>: <code class="docutils literal notranslate"><span class="pre">OpExecutionContext</span></code> objects with <code class="docutils literal notranslate"><span class="pre">run_id</span></code> and <code class="docutils literal notranslate"><span class="pre">partition_key</span></code></p></li>
+<li><p><strong>Airflow</strong>: Dictionary or object contexts with <code class="docutils literal notranslate"><span class="pre">dag_id</span></code> and <code class="docutils literal notranslate"><span class="pre">task_id</span></code></p></li>
+</ul>
+</section>
+<section id="metadata-injection">
+<h3>Metadata Injection<a class="headerlink" href="#metadata-injection" title="Link to this heading"></a></h3>
+<p>Orchestration context is automatically injected into your ETL metadata:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dagster context automatically detected</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dagster</span><span class="w"> </span><span class="kn">import</span> <span class="n">op</span><span class="p">,</span> <span class="n">OpExecutionContext</span>
+
+<span class="nd">@op</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_dagster_op</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">OpExecutionContext</span><span class="p">):</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">my_etl_function</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+<span class="c1"># Airflow context automatically detected</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">airflow.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_airflow_task</span><span class="p">(</span><span class="o">**</span><span class="n">context</span><span class="p">):</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">my_etl_function</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>The orchestration integration handles errors gracefully:</p>
+<ul class="simple">
+<li><p><strong>Invalid Return Types</strong>: Raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if ETL function doesn’t return <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code></p></li>
+<li><p><strong>Unknown Contexts</strong>: Issues warnings for unrecognized orchestration contexts</p></li>
+<li><p><strong>API Failures</strong>: Propagates Watcher API errors as expected</p></li>
+</ul>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Always Return ETLResult</strong>: Your ETL functions must return <code class="docutils literal notranslate"><span class="pre">ETLResult</span></code> or a subclass</p></li>
+<li><p><strong>Use Type Hints</strong>: Add type hints for better IDE support and error detection</p></li>
+<li><p><strong>Handle Errors</strong>: Implement proper error handling in your ETL functions</p></li>
+<li><p><strong>Test Integration</strong>: Test your orchestration integration with mock contexts</p></li>
+<li><p><strong>Monitor Metrics</strong>: Use the injected orchestration metadata for monitoring</p></li>
+</ol>
+<section id="example-complete-dagster-pipeline-with-parent-execution-tracking">
+<h3>Example: Complete Dagster Pipeline with Parent Execution Tracking<a class="headerlink" href="#example-complete-dagster-pipeline-with-parent-execution-tracking" title="Link to this heading"></a></h3>
+<p>Track a parent execution that spans the entire workflow with child executions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dagster</span><span class="w"> </span><span class="kn">import</span> <span class="n">op</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">OpExecutionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratedETL</span><span class="p">,</span> <span class="n">ETLResult</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="c1"># Parent pipeline config</span>
+<span class="n">parent_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_data_pipeline&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;etl_workflow&quot;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Separate pipeline configs for each stage</span>
+<span class="n">extract_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_extract_pipeline&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;extract&quot;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">transform_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_transform_pipeline&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;transform&quot;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">load_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;user_load_pipeline&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;load&quot;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Dagster ops with parent execution tracking</span>
+<span class="nd">@op</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_parent_execution</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">OpExecutionContext</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start parent execution and return ID.&quot;&quot;&quot;</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">parent_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">start_parent_execution</span><span class="p">()</span>
+
+<span class="nd">@op</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_op</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">OpExecutionContext</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">extract_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">extract_users</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">parent_execution_id</span><span class="p">)</span>
+
+<span class="nd">@op</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_op</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">OpExecutionContext</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">extract_result</span><span class="p">:</span> <span class="n">ETLResult</span><span class="p">):</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">transform_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">transform_users</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">parent_execution_id</span><span class="p">)</span>
+
+<span class="nd">@op</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_op</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">OpExecutionContext</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">transform_result</span><span class="p">:</span> <span class="n">ETLResult</span><span class="p">):</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">load_config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">load_users</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">parent_execution_id</span><span class="p">)</span>
+
+<span class="nd">@op</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">end_parent_execution</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">OpExecutionContext</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;End the parent execution.&quot;&quot;&quot;</span>
+    <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">parent_config</span><span class="p">)</span>
+
+    <span class="n">summary_result</span> <span class="o">=</span> <span class="n">ETLResult</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;execution_date&quot;</span><span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">run_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">etl</span><span class="o">.</span><span class="n">end_parent_execution</span><span class="p">(</span><span class="n">parent_execution_id</span><span class="p">,</span> <span class="n">summary_result</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">summary_result</span>
+
+<span class="nd">@job</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">user_data_pipeline</span><span class="p">():</span>
+    <span class="n">parent_id</span> <span class="o">=</span> <span class="n">start_parent_execution</span><span class="p">()</span>
+    <span class="n">extract_result</span> <span class="o">=</span> <span class="n">extract_op</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+    <span class="n">transform_result</span> <span class="o">=</span> <span class="n">transform_op</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">extract_result</span><span class="p">)</span>
+    <span class="n">load_result</span> <span class="o">=</span> <span class="n">load_op</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">transform_result</span><span class="p">)</span>
+    <span class="n">end_parent_execution</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-complete-airflow-dag-with-parent-execution-tracking">
+<h3>Example: Complete Airflow DAG with Parent Execution Tracking<a class="headerlink" href="#example-complete-airflow-dag-with-parent-execution-tracking" title="Link to this heading"></a></h3>
+<p>Track a parent execution that spans the entire workflow with child executions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">airflow.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">dag</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dag_failure_callback</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DAG failure callback to end parent execution on failure.&quot;&quot;&quot;</span>
+    <span class="n">parent_execution_id</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;task_instance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">xcom_pull</span><span class="p">(</span><span class="n">task_ids</span><span class="o">=</span><span class="s1">&#39;start_parent_execution&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parent_execution_id</span><span class="p">:</span>
+        <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">parent_config</span><span class="p">)</span>
+        <span class="n">failure_result</span> <span class="o">=</span> <span class="n">ETLResult</span><span class="p">(</span>
+            <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">etl</span><span class="o">.</span><span class="n">end_parent_execution</span><span class="p">(</span><span class="n">parent_execution_id</span><span class="p">,</span> <span class="n">failure_result</span><span class="p">)</span>
+
+<span class="nd">@dag</span><span class="p">(</span><span class="n">schedule_interval</span><span class="o">=</span><span class="s1">&#39;@daily&#39;</span><span class="p">,</span> <span class="n">on_failure_callback</span><span class="o">=</span><span class="n">dag_failure_callback</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">etl_pipeline</span><span class="p">():</span>
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_parent_execution</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start parent execution and return ID.&quot;&quot;&quot;</span>
+        <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">parent_config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">start_parent_execution</span><span class="p">()</span> <span class="c1"># Returns the parent execution ID</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_task</span><span class="p">(</span><span class="n">parent_execution_id</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span><span class="p">):</span>
+        <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">extract_config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">extract_function</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">parent_execution_id</span><span class="p">)</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_task</span><span class="p">(</span><span class="n">parent_execution_id</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span><span class="p">):</span>
+        <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">transform_config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">transform_function</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="o">=</span><span class="n">parent_execution_id</span><span class="p">)</span>
+
+    <span class="nd">@task</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">end_parent_execution</span><span class="p">(</span><span class="n">parent_execution_id</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;End the parent execution.&quot;&quot;&quot;</span>
+        <span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">parent_config</span><span class="p">)</span>
+
+        <span class="n">summary_result</span> <span class="o">=</span> <span class="n">ETLResult</span><span class="p">(</span>
+            <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;execution_date&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;ds&#39;</span><span class="p">],</span>
+                <span class="s2">&quot;dag_run_id&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;dag_run&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">run_id</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">etl</span><span class="o">.</span><span class="n">end_parent_execution</span><span class="p">(</span><span class="n">parent_execution_id</span><span class="p">,</span> <span class="n">summary_result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">summary_result</span>
+
+
+    <span class="n">parent_id</span> <span class="o">=</span> <span class="n">start_parent_execution</span><span class="p">()</span>
+    <span class="n">extract</span> <span class="o">=</span> <span class="n">extract_task</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+    <span class="n">transform</span> <span class="o">=</span> <span class="n">transform_task</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">end_parent_execution</span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span>
+
+    <span class="n">parent_id</span> <span class="o">&gt;&gt;</span> <span class="n">extract</span> <span class="o">&gt;&gt;</span> <span class="n">transform</span> <span class="o">&gt;&gt;</span> <span class="n">end</span>
+
+<span class="n">etl_pipeline</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="watermark_management.html" class="btn btn-neutral float-left" title="Watermark Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
