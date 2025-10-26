@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authentication &mdash; Watcher SDK 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Execution Management" href="executions.html" />
+    <link rel="prev" title="Address Management" href="address_management.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Watcher SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#store-pipeline-and-address-lineage-configuration">Store Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#sync-pipeline-and-address-lineage-configuration">Sync Pipeline and Address Lineage Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/quick_start.html#track-pipeline-execution">Track Pipeline Execution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Core Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#etlresult">ETLResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchercontext">WatcherContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#executionresult">ExecutionResult</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#pipeline-configuration">Pipeline Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipelineconfig">PipelineConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#syncedpipelineconfig">SyncedPipelineConfig</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#address-lineage">Address Lineage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#address">Address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#addresslineage">AddressLineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html#error-handling">Error Handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watcherapierror">WatcherAPIError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#watchernetworkerror">WatcherNetworkError</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="address_management.html">Address Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="address_management.html#address-lineage-configuration">Address Lineage Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="address_management.html#loading-address-lineage">Loading Address Lineage</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Authentication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-cloud-environments">Supported Cloud Environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#explicit-authentication-configuration">Explicit Authentication Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cloud-specific-configuration">Cloud-Specific Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-with-cloud-dependencies">Installation with Cloud Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orchestration-integration">Orchestration Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-complete-cloud-deployment">Example: Complete Cloud Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="executions.html">Execution Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#exception-handling">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="executions.html#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#custom-etl-results">Custom ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#etl-results">ETL Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#execution-results">Execution Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#hierarchical-executions">Hierarchical Executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#active-flag">Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="orchestration.html">Orchestration Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#dagster-integration">Dagster Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#airflow-integration">Airflow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#watermark-management">Watermark Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#context-detection">Context Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#metadata-injection">Metadata Injection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#example-complete-dagster-pipeline-with-parent-execution-tracking">Example: Complete Dagster Pipeline with Parent Execution Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#example-complete-airflow-dag-with-parent-execution-tracking">Example: Complete Airflow DAG with Parent Execution Tracking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#incrementing-watermarks">Incrementing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#accessing-watermarks">Accessing Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#watermark-data-type">Watermark Data Type</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Watcher SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Authentication</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/authentication.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="authentication">
+<h1>Authentication<a class="headerlink" href="#authentication" title="Link to this heading"></a></h1>
+<p>The ETL Watcher SDK handles authentication automatically when deployed in cloud environments. The Watcher framework itself doesn’t require authentication - instead, authentication is handled by the cloud provider (GCP, Azure, AWS) when your application is running in their managed services.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The SDK automatically detects your cloud environment and configures the appropriate authentication method. You can also explicitly provide authentication credentials if needed.</p>
+</section>
+<section id="supported-cloud-environments">
+<h2>Supported Cloud Environments<a class="headerlink" href="#supported-cloud-environments" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Google Cloud Platform (GCP)</strong>: For GKE and Cloud Run deployments</p></li>
+<li><p><strong>Microsoft Azure</strong>: For AKS and Container Instances</p></li>
+<li><p><strong>Amazon Web Services (AWS)</strong>: For EKS and ECS deployments</p></li>
+<li><p><strong>Local Development</strong>: No authentication required</p></li>
+</ul>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<p>The SDK automatically handles authentication when deployed in cloud environments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="c1"># Auto-detect cloud environment and configure authentication</span>
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">)</span>
+
+<span class="c1"># Use with OrchestratedETL</span>
+<span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-pipeline&quot;</span><span class="p">,</span> <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;etl&quot;</span><span class="p">),</span>
+    <span class="n">default_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span>
+<span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratedETL</span>
+<span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="explicit-authentication-configuration">
+<h2>Explicit Authentication Configuration<a class="headerlink" href="#explicit-authentication-configuration" title="Link to this heading"></a></h2>
+<p>For local development or custom deployments, you can provide explicit credentials:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
+
+<span class="c1"># Bearer token for custom authentication</span>
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="s2">&quot;your-bearer-token&quot;</span><span class="p">)</span>
+
+<span class="c1"># GCP service account file for local development</span>
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="s2">&quot;/path/to/service-account.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cloud-specific-configuration">
+<h2>Cloud-Specific Configuration<a class="headerlink" href="#cloud-specific-configuration" title="Link to this heading"></a></h2>
+<p>The SDK automatically detects and handles authentication for each cloud provider:</p>
+<p><strong>Google Cloud Platform (GCP)</strong>
+- Uses metadata server for GKE/Cloud Run deployments
+- Falls back to service account key files when provided</p>
+<p><strong>Microsoft Azure</strong>
+- Uses managed identity for AKS/Container Instances
+- Falls back to service principal credentials</p>
+<p><strong>Amazon Web Services (AWS)</strong>
+- Uses IAM roles for EKS/ECS deployments
+- Falls back to environment variables</p>
+<p><strong>Local Development</strong>
+- No authentication required
+- Can provide bearer token or service account file for testing</p>
+</section>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<p>The SDK can automatically detect cloud environments based on environment variables:</p>
+<p><strong>GCP:</strong>
+- <code class="docutils literal notranslate"><span class="pre">GOOGLE_APPLICATION_CREDENTIALS</span></code>: Path to service account key file</p>
+<p><strong>Azure:</strong>
+- <code class="docutils literal notranslate"><span class="pre">AZURE_TENANT_ID</span></code>: Azure tenant ID
+- <code class="docutils literal notranslate"><span class="pre">AZURE_CLIENT_ID</span></code>: Azure client ID
+- <code class="docutils literal notranslate"><span class="pre">AZURE_CLIENT_SECRET</span></code>: Azure client secret</p>
+<p><strong>AWS:</strong>
+- <code class="docutils literal notranslate"><span class="pre">AWS_ACCESS_KEY_ID</span></code>: AWS access key ID
+- <code class="docutils literal notranslate"><span class="pre">AWS_SECRET_ACCESS_KEY</span></code>: AWS secret access key
+- <code class="docutils literal notranslate"><span class="pre">AWS_SESSION_TOKEN</span></code>: AWS session token (optional)
+- <code class="docutils literal notranslate"><span class="pre">AWS_REGION</span></code>: AWS region</p>
+</section>
+<section id="installation-with-cloud-dependencies">
+<h2>Installation with Cloud Dependencies<a class="headerlink" href="#installation-with-cloud-dependencies" title="Link to this heading"></a></h2>
+<p>To use cloud-specific authentication, install the appropriate optional dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install all cloud dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>etl-watcher-sdk<span class="o">[</span>cloud<span class="o">]</span>
+
+<span class="c1"># Install specific cloud provider dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>etl-watcher-sdk<span class="o">[</span>gcp<span class="o">]</span><span class="w">    </span><span class="c1"># For Google Cloud Platform</span>
+pip<span class="w"> </span>install<span class="w"> </span>etl-watcher-sdk<span class="o">[</span>azure<span class="o">]</span><span class="w">  </span><span class="c1"># For Microsoft Azure</span>
+pip<span class="w"> </span>install<span class="w"> </span>etl-watcher-sdk<span class="o">[</span>aws<span class="o">]</span><span class="w">    </span><span class="c1"># For Amazon Web Services</span>
+</pre></div>
+</div>
+</section>
+<section id="orchestration-integration">
+<h2>Orchestration Integration<a class="headerlink" href="#orchestration-integration" title="Link to this heading"></a></h2>
+<p>The authentication system works seamlessly with orchestration frameworks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratedETL</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="c1"># Configure pipeline</span>
+<span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cloud-etl&quot;</span><span class="p">,</span> <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;etl&quot;</span><span class="p">),</span>
+    <span class="n">default_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Auto-detect authentication</span>
+<span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">)</span>
+
+<span class="c1"># Or provide explicit credentials</span>
+<span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">,</span> <span class="s2">&quot;/path/to/service-account.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>Authentication errors are raised as <code class="docutils literal notranslate"><span class="pre">AuthenticationError</span></code> exceptions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuthenticationError</span><span class="p">,</span> <span class="n">Watcher</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="s2">&quot;/path/to/service-account.json&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">AuthenticationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Authentication failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="common-issues">
+<h2>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Missing Dependencies</strong>: Ensure you have installed the appropriate cloud dependencies.</p></li>
+<li><p><strong>Incorrect Credentials</strong>: Verify that your service account or credentials have the necessary permissions.</p></li>
+<li><p><strong>Network Access</strong>: Ensure your deployment can access the cloud metadata servers or authentication endpoints.</p></li>
+<li><p><strong>Token Expiry</strong>: The SDK automatically refreshes tokens, but ensure your credentials are valid.</p></li>
+</ol>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Use Auto-Detection</strong>: Let the SDK auto-detect your cloud environment when possible.</p></li>
+<li><p><strong>Secure Credentials</strong>: Store sensitive credentials in environment variables or secure key management systems.</p></li>
+<li><p><strong>Minimal Permissions</strong>: Use service accounts with minimal required permissions.</p></li>
+<li><p><strong>Token Refresh</strong>: The SDK handles token refresh automatically, but monitor for authentication failures.</p></li>
+<li><p><strong>Error Handling</strong>: Always handle <code class="docutils literal notranslate"><span class="pre">AuthenticationError</span></code> exceptions in your code.</p></li>
+</ol>
+</section>
+<section id="example-complete-cloud-deployment">
+<h2>Example: Complete Cloud Deployment<a class="headerlink" href="#example-complete-cloud-deployment" title="Link to this heading"></a></h2>
+<p>Here’s a complete example for a cloud deployment:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrchestratedETL</span><span class="p">,</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_etl_function</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">):</span>
+    <span class="c1"># Your ETL logic here</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span><span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Configure pipeline</span>
+<span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cloud-etl&quot;</span><span class="p">,</span> <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;etl&quot;</span><span class="p">),</span>
+    <span class="n">default_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Auto-detect and configure authentication</span>
+<span class="n">etl</span> <span class="o">=</span> <span class="n">OrchestratedETL</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.com&quot;</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">)</span>
+
+<span class="c1"># Execute ETL with automatic authentication</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">etl</span><span class="o">.</span><span class="n">execute_etl</span><span class="p">(</span><span class="n">my_etl_function</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution completed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">completed_successfully</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This example will automatically detect whether you’re running on GCP, Azure, or AWS and configure the appropriate authentication method.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="address_management.html" class="btn btn-neutral float-left" title="Address Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="executions.html" class="btn btn-neutral float-right" title="Execution Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

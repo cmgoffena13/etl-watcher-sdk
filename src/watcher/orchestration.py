@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, Optional, Union
 import pendulum
 
 from watcher import ETLResult, Watcher, WatcherContext
+from watcher.auth import _create_auth_provider
 from watcher.models.pipeline import PipelineConfig
 
 
@@ -56,15 +57,23 @@ class OrchestratedETL:
         result = etl.execute_etl(my_etl_function)
     """
 
-    def __init__(self, watcher_url: str, pipeline_config: PipelineConfig):
+    def __init__(
+        self,
+        watcher_url: str,
+        pipeline_config: PipelineConfig,
+        auth: Optional[str] = None,
+    ):
         """
         Initialize the orchestrated ETL wrapper.
 
         Args:
             watcher_url: Base URL for the Watcher API
             pipeline_config: Pipeline configuration to sync
+            auth: Authentication configuration. Can be:
+                  - None: Auto-detect cloud environment
+                  - str: Bearer token or GCP service account file path
         """
-        self.watcher = Watcher(watcher_url)
+        self.watcher = Watcher(watcher_url, auth)
         self.pipeline_config = pipeline_config
         self._synced_config = None
 

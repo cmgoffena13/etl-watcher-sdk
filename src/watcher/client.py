@@ -7,6 +7,7 @@ import httpx
 import pendulum
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
+from watcher.auth import AuthenticationError, _create_auth_provider, _sign_aws_request
 from watcher.exceptions import WatcherNetworkError, handle_http_error
 from watcher.models.address_lineage import _AddressLineagePostInput
 from watcher.models.execution import (
@@ -26,8 +27,19 @@ from watcher.utils import retry_http
 
 
 class Watcher:
-    def __init__(self, base_url: str):
+    def __init__(self, base_url: str, auth: Optional[str] = None):
+        """
+        Initialize the Watcher client.
+
+        Args:
+            base_url: Base URL for the Watcher API
+            auth: Authentication configuration. Can be:
+                  - None: Auto-detect cloud environment
+                  - str: Bearer token or GCP service account file path
+        """
         self.base_url = base_url
+        self.auth_provider = _create_auth_provider(auth)
+
         self.client = httpx.Client(
             base_url=base_url,
             limits=httpx.Limits(
@@ -40,6 +52,36 @@ class Watcher:
 
     def _make_request(self, method: str, endpoint: str, **kwargs):
         """Make an HTTP request with retry logic and proper error handling."""
+        # Add authentication headers
+        auth_headers = self.auth_provider.get_headers()
+
+        # Handle AWS signing if needed
+        if "X-AWS-Auth" in auth_headers:
+            # Remove the AWS auth signal header
+            auth_headers.pop("X-AWS-Auth")
+
+            # Get AWS credentials from auth provider
+            try:
+                aws_creds = self.auth_provider.get_aws_credentials()
+                signed_headers = _sign_aws_request(
+                    method=method,
+                    url=f"{self.base_url}{endpoint}",
+                    headers=auth_headers,
+                    body=kwargs.get("data", ""),
+                    region="us-east-1",
+                )
+                auth_headers.update(signed_headers)
+            except Exception as e:
+                raise AuthenticationError(f"Failed to sign AWS request: {e}")
+
+        if "headers" in kwargs:
+            kwargs["headers"].update(auth_headers)
+        else:
+            kwargs["headers"] = auth_headers
+
+        # Refresh authentication if needed
+        self.auth_provider.refresh_if_needed()
+
         try:
             response = self._make_request_with_retry(method, endpoint, **kwargs)
             response.raise_for_status()

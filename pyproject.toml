@@ -1,6 +1,6 @@
 [project]
 name = "etl-watcher-sdk"
-version = "0.1.31"
+version = "0.1.4"
 description = "SDK for Watcher framework"
 readme = "README.md"
 license = "MIT"
@@ -33,6 +33,20 @@ docs = [
 build = [
     "twine>=6.2.0",
     "uv-build>=0.9.0",
+]
+gcp = [
+    "google-auth>=2.0.0",
+]
+azure = [
+    "azure-identity>=1.0.0",
+]
+aws = [
+    "boto3>=1.26.0",
+]
+cloud = [
+    "google-auth>=2.0.0",
+    "azure-identity>=1.0.0",
+    "boto3>=1.26.0",
 ]
 
 [project.urls]

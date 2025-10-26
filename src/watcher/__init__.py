@@ -1,3 +1,4 @@
+from watcher.auth import AuthenticationError
 from watcher.client import Watcher
 from watcher.exceptions import WatcherAPIError, WatcherError, WatcherNetworkError
 from watcher.models.address_lineage import Address, AddressLineage
@@ -10,17 +11,18 @@ from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConf
 from watcher.orchestration import OrchestratedETL
 
 __all__ = [
+    "Address",
+    "AddressLineage",
+    "AuthenticationError",
+    "ETLResult",
+    "ExecutionResult",
+    "OrchestratedETL",
+    "Pipeline",
+    "PipelineConfig",
+    "SyncedPipelineConfig",
     "Watcher",
     "WatcherAPIError",
+    "WatcherContext",
     "WatcherError",
     "WatcherNetworkError",
-    "PipelineConfig",
-    "Pipeline",
-    "SyncedPipelineConfig",
-    "ETLResult",
-    "WatcherContext",
-    "ExecutionResult",
-    "AddressLineage",
-    "Address",
-    "OrchestratedETL",
 ]
