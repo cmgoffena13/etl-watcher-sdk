@@ -33,7 +33,7 @@ docs:
 docs-serve:
 	uv run sphinx-autobuild docs docs/_build/html --open-browser --port 8080
 
-publish: format test docs build upload
+publish: format test build upload
 	git tag -a v$(version) -m "Release v$(version)"
 	git push origin v$(version)
 	git push origin main
