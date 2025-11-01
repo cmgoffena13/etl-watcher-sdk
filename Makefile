@@ -9,7 +9,7 @@ lint:
 	uv run -- ruff check --fix
 
 test:
-	uv run -- pytest -vv --tb=short
+	uv run -- pytest -vv --tb=short -n auto
 
 install:
 	uv sync --frozen --compile-bytecode --all-extras

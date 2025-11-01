@@ -8,6 +8,7 @@ import httpx
 import pytest
 
 from watcher.client import Watcher
+from watcher.http_client import ProductionHTTPClient
 from watcher.models.address_lineage import Address, AddressLineage
 from watcher.models.execution import ETLResult, WatcherContext
 from watcher.models.pipeline import Pipeline, PipelineConfig, SyncedPipelineConfig
@@ -17,12 +18,12 @@ def test_watcher_initialization():
     """Test Watcher client initialization."""
     watcher = Watcher("https://api.example.com")
     assert watcher.base_url == "https://api.example.com"
-    assert isinstance(watcher.client, httpx.Client)
+    assert isinstance(watcher.client, ProductionHTTPClient)
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_sync_pipeline_config_success(
-    mock_make_request_with_retry, watcher_client, sample_pipeline_config
+    mock_request_with_retry, watcher_client, sample_pipeline_config
 ):
     """Test successful pipeline sync."""
     # Mock API responses
@@ -38,7 +39,7 @@ def test_sync_pipeline_config_success(
     mock_lineage_response = Mock()
     mock_lineage_response.raise_for_status.return_value = None
 
-    mock_make_request_with_retry.side_effect = [
+    mock_request_with_retry.side_effect = [
         mock_pipeline_response,
         mock_lineage_response,
     ]
@@ -48,12 +49,12 @@ def test_sync_pipeline_config_success(
     assert isinstance(result, SyncedPipelineConfig)
     assert result.pipeline.active is True
     assert result.watermark == "2024-01-01"
-    assert mock_make_request_with_retry.call_count == 2  # Pipeline + address lineage
+    assert mock_request_with_retry.call_count == 2  # Pipeline + address lineage
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_sync_pipeline_config_inactive(
-    mock_make_request_with_retry, watcher_client, sample_pipeline_config
+    mock_request_with_retry, watcher_client, sample_pipeline_config
 ):
     """Test pipeline sync when pipeline is inactive."""
     # Mock inactive pipeline response
@@ -65,21 +66,19 @@ def test_sync_pipeline_config_inactive(
         "watermark": None,
     }
     mock_response.raise_for_status.return_value = None
-    mock_make_request_with_retry.return_value = mock_response
+    mock_request_with_retry.return_value = mock_response
 
     result = watcher_client.sync_pipeline_config(sample_pipeline_config)
 
     assert isinstance(result, SyncedPipelineConfig)
     assert result.pipeline.active is False
     assert result.watermark is None  # Inactive pipelines have no watermark
-    assert (
-        mock_make_request_with_retry.call_count == 1
-    )  # Only pipeline call, no lineage
+    assert mock_request_with_retry.call_count == 1  # Only pipeline call, no lineage
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_sync_pipeline_config_no_lineage(
-    mock_make_request_with_retry, watcher_client, sample_pipeline_config
+    mock_request_with_retry, watcher_client, sample_pipeline_config
 ):
     """Test pipeline sync when load_lineage is False."""
     # Mock pipeline response with load_lineage=False
@@ -91,18 +90,18 @@ def test_sync_pipeline_config_no_lineage(
         "watermark": "2024-01-01",
     }
     mock_response.raise_for_status.return_value = None
-    mock_make_request_with_retry.return_value = mock_response
+    mock_request_with_retry.return_value = mock_response
 
     result = watcher_client.sync_pipeline_config(sample_pipeline_config)
 
     assert isinstance(result, SyncedPipelineConfig)
     assert result.pipeline.active is True
-    assert mock_make_request_with_retry.call_count == 1  # Only pipeline call
+    assert mock_request_with_retry.call_count == 1  # Only pipeline call
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_pipeline_execution_decorator_without_context(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test execution decorator without watcher_context parameter."""
     # Mock API responses
@@ -113,7 +112,7 @@ def test_track_pipeline_execution_decorator_without_context(
     mock_end = Mock()
     mock_end.raise_for_status.return_value = None
 
-    mock_make_request_with_retry.side_effect = [mock_start, mock_end]
+    mock_request_with_retry.side_effect = [mock_start, mock_end]
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def simple_etl():
@@ -124,9 +123,9 @@ def test_track_pipeline_execution_decorator_without_context(
     assert result is not None
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_pipeline_execution_decorator_with_context(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test execution decorator with watcher_context parameter."""
     # Mock API responses
@@ -137,7 +136,7 @@ def test_track_pipeline_execution_decorator_with_context(
     mock_end = Mock()
     mock_end.raise_for_status.return_value = None
 
-    mock_make_request_with_retry.side_effect = [mock_start, mock_end]
+    mock_request_with_retry.side_effect = [mock_start, mock_end]
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_with_context(watcher_context: WatcherContext):
@@ -162,8 +161,8 @@ def test_track_pipeline_execution_inactive_pipeline(watcher_client):
     assert result is None
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
-def test_etl_metrics_validation(mock_make_request_with_retry, watcher_client):
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
+def test_etl_metrics_validation(mock_request_with_retry, watcher_client):
     """Test ETLResult validation in decorator."""
     # Mock API responses
     mock_start = Mock()
@@ -173,7 +172,7 @@ def test_etl_metrics_validation(mock_make_request_with_retry, watcher_client):
     mock_end = Mock()
     mock_end.raise_for_status.return_value = None
 
-    mock_make_request_with_retry.side_effect = [mock_start, mock_end]
+    mock_request_with_retry.side_effect = [mock_start, mock_end]
 
     class CustomMetrics(ETLResult):
         custom_field: str = "test"
@@ -189,15 +188,15 @@ def test_etl_metrics_validation(mock_make_request_with_retry, watcher_client):
     assert result is not None
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
-def test_etl_metrics_validation_failure(mock_make_request_with_retry, watcher_client):
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
+def test_etl_metrics_validation_failure(mock_request_with_retry, watcher_client):
     """Test ETLResult validation failure."""
     # Mock API responses
     mock_start = Mock()
     mock_start.json.return_value = {"id": 456}
     mock_start.raise_for_status.return_value = None
 
-    mock_make_request_with_retry.return_value = mock_start
+    mock_request_with_retry.return_value = mock_start
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_invalid_return():
@@ -208,11 +207,11 @@ def test_etl_metrics_validation_failure(mock_make_request_with_retry, watcher_cl
         etl_invalid_return()
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
-def test_execution_error_handling(mock_make_request_with_retry, watcher_client):
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
+def test_execution_error_handling(mock_request_with_retry, watcher_client):
     """Test execution error handling."""
     # Mock API failure
-    mock_make_request_with_retry.side_effect = httpx.HTTPError("API Error")
+    mock_request_with_retry.side_effect = httpx.HTTPError("API Error")
 
     @watcher_client.track_pipeline_execution(pipeline_id=123, active=True)
     def etl_with_error():
@@ -287,9 +286,9 @@ def test_pipeline_config_creation():
     assert len(config.address_lineage.target_addresses) == 1
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_child_pipeline_execution_success(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test successful child pipeline execution tracking."""
     # Mock API responses
@@ -298,7 +297,7 @@ def test_track_child_pipeline_execution_success(
     mock_end_response = Mock()
     mock_end_response.json.return_value = {"status": "success"}
 
-    mock_make_request_with_retry.side_effect = [mock_start_response, mock_end_response]
+    mock_request_with_retry.side_effect = [mock_start_response, mock_end_response]
 
     # Test function
     def child_function(watcher_context: WatcherContext, data):
@@ -320,10 +319,10 @@ def test_track_child_pipeline_execution_success(
     )
 
     # Verify API calls
-    assert mock_make_request_with_retry.call_count == 2
+    assert mock_request_with_retry.call_count == 2
 
     # Check start execution call
-    start_call = mock_make_request_with_retry.call_args_list[0]
+    start_call = mock_request_with_retry.call_args_list[0]
     assert start_call[0][0] == "POST"
     assert start_call[0][1] == "/start_pipeline_execution"
     start_payload = start_call[1]["json"]
@@ -333,7 +332,7 @@ def test_track_child_pipeline_execution_success(
     assert start_payload["next_watermark"] == "2024-01-02"
 
     # Check end execution call
-    end_call = mock_make_request_with_retry.call_args_list[1]
+    end_call = mock_request_with_retry.call_args_list[1]
     assert end_call[0][0] == "POST"
     assert end_call[0][1] == "/end_pipeline_execution"
     end_payload = end_call[1]["json"]
@@ -348,9 +347,9 @@ def test_track_child_pipeline_execution_success(
     assert result.result.total_rows == 100
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_child_pipeline_execution_without_watcher_context(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test child pipeline execution without WatcherContext parameter."""
     # Mock API responses
@@ -359,7 +358,7 @@ def test_track_child_pipeline_execution_without_watcher_context(
     mock_end_response = Mock()
     mock_end_response.json.return_value = {"status": "success"}
 
-    mock_make_request_with_retry.side_effect = [mock_start_response, mock_end_response]
+    mock_request_with_retry.side_effect = [mock_start_response, mock_end_response]
 
     # Test function without WatcherContext
     def child_function(data):
@@ -380,9 +379,9 @@ def test_track_child_pipeline_execution_without_watcher_context(
     assert result.result.total_rows == 200
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_child_pipeline_execution_inactive_pipeline(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test child pipeline execution with inactive pipeline."""
     # Call the method with active=False
@@ -395,12 +394,12 @@ def test_track_child_pipeline_execution_inactive_pipeline(
 
     # Should return None and not make API calls
     assert result is None
-    assert mock_make_request_with_retry.call_count == 0
+    assert mock_request_with_retry.call_count == 0
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_child_pipeline_execution_function_exception(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test child pipeline execution when function raises exception."""
     # Mock API responses
@@ -409,7 +408,7 @@ def test_track_child_pipeline_execution_function_exception(
     mock_end_response = Mock()
     mock_end_response.json.return_value = {"status": "success"}
 
-    mock_make_request_with_retry.side_effect = [mock_start_response, mock_end_response]
+    mock_request_with_retry.side_effect = [mock_start_response, mock_end_response]
 
     # Test function that raises exception
     def child_function():
@@ -422,18 +421,18 @@ def test_track_child_pipeline_execution_function_exception(
         )
 
     # Verify API calls were made
-    assert mock_make_request_with_retry.call_count == 2
+    assert mock_request_with_retry.call_count == 2
 
     # Check that end execution was called with failure
-    end_call = mock_make_request_with_retry.call_args_list[1]
+    end_call = mock_request_with_retry.call_args_list[1]
     end_payload = end_call[1]["json"]
     assert end_payload["id"] == 456
     assert end_payload["completed_successfully"] is False
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_child_pipeline_execution_invalid_return_type(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test child pipeline execution with invalid return type."""
     # Mock API responses
@@ -442,7 +441,7 @@ def test_track_child_pipeline_execution_invalid_return_type(
     mock_end_response = Mock()
     mock_end_response.json.return_value = {"status": "success"}
 
-    mock_make_request_with_retry.side_effect = [mock_start_response, mock_end_response]
+    mock_request_with_retry.side_effect = [mock_start_response, mock_end_response]
 
     # Test function that returns invalid type
     def child_function():
@@ -455,9 +454,9 @@ def test_track_child_pipeline_execution_invalid_return_type(
         )
 
 
-@patch("watcher.client.Watcher._make_request_with_retry")
+@patch("watcher.client.ProductionHTTPClient.request_with_retry")
 def test_track_child_pipeline_execution_with_execution_metadata(
-    mock_make_request_with_retry, watcher_client
+    mock_request_with_retry, watcher_client
 ):
     """Test child pipeline execution with execution metadata."""
     # Mock API responses
@@ -466,7 +465,7 @@ def test_track_child_pipeline_execution_with_execution_metadata(
     mock_end_response = Mock()
     mock_end_response.json.return_value = {"status": "success"}
 
-    mock_make_request_with_retry.side_effect = [mock_start_response, mock_end_response]
+    mock_request_with_retry.side_effect = [mock_start_response, mock_end_response]
 
     # Test function
     def child_function():
@@ -482,7 +481,7 @@ def test_track_child_pipeline_execution_with_execution_metadata(
     )
 
     # Check end execution call includes metadata
-    end_call = mock_make_request_with_retry.call_args_list[1]
+    end_call = mock_request_with_retry.call_args_list[1]
     end_payload = end_call[1]["json"]
     assert end_payload["execution_metadata"] == {"ticker": "AAPL", "batch_id": "123"}
 

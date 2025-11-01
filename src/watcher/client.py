@@ -1,6 +1,5 @@
 import inspect
 import warnings
-from contextlib import contextmanager
 from typing import Optional, Union
 
 import httpx
@@ -9,6 +8,7 @@ from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 from watcher.auth import AuthenticationError, _create_auth_provider, _sign_aws_request
 from watcher.exceptions import WatcherNetworkError, handle_http_error
+from watcher.http_client import ProductionHTTPClient
 from watcher.models.address_lineage import _AddressLineagePostInput
 from watcher.models.execution import (
     ETLResult,
@@ -23,7 +23,6 @@ from watcher.models.pipeline import (
     _PipelineResponse,
     _PipelineWithResponse,
 )
-from watcher.utils import retry_http
 
 
 class Watcher:
@@ -38,20 +37,11 @@ class Watcher:
                   - str: Bearer token or GCP service account file path
         """
         self.base_url = base_url
-        self.auth_provider = _create_auth_provider(auth)
-
-        self.client = httpx.Client(
-            base_url=base_url,
-            limits=httpx.Limits(
-                max_keepalive_connections=10,
-                max_connections=20,
-                keepalive_expiry=30.0,
-            ),
-            timeout=30.0,
-        )
+        self.client = ProductionHTTPClient(base_url=base_url)
+        self.auth_provider = _create_auth_provider(auth, http_client=self.client)
 
     def _make_request(self, method: str, endpoint: str, **kwargs):
-        """Make an HTTP request with retry logic and proper error handling."""
+        """Make an HTTP request with proper error handling."""
         # Add authentication headers
         auth_headers = self.auth_provider.get_headers()
 
@@ -60,13 +50,14 @@ class Watcher:
             # Remove the AWS auth signal header
             auth_headers.pop("X-AWS-Auth")
 
-            # Get AWS credentials from auth provider
+            # Sign the request with AWS credentials
             try:
-                aws_creds = self.auth_provider.get_aws_credentials()
                 signed_headers = _sign_aws_request(
                     method=method,
                     url=f"{self.base_url}{endpoint}",
                     headers=auth_headers,
+                    cache=self.auth_provider.get_cache(),
+                    http_client=self.client,
                     body=kwargs.get("data", ""),
                     region="us-east-1",
                 )
@@ -79,22 +70,14 @@ class Watcher:
         else:
             kwargs["headers"] = auth_headers
 
-        # Refresh authentication if needed
-        self.auth_provider.refresh_if_needed()
-
         try:
-            response = self._make_request_with_retry(method, endpoint, **kwargs)
+            response = self.client.request_with_retry(method, endpoint, **kwargs)
             response.raise_for_status()
             return response
         except httpx.HTTPStatusError as e:
             raise handle_http_error(e)
         except httpx.RequestError as e:
             raise WatcherNetworkError(f"Network error: {e}")
-
-    @retry_http(max_retries=3, backoff_factor=1.0, jitter=True)
-    def _make_request_with_retry(self, method: str, endpoint: str, **kwargs):
-        """Make an HTTP request with retry logic (internal method)."""
-        return self.client.request(method, endpoint, **kwargs)
 
     def sync_pipeline_config(self, config: PipelineConfig) -> SyncedPipelineConfig:
         """

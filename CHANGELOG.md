@@ -86,3 +86,10 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 ## [0.1.31] - 2025-10-25
 
 ### Upgraded Packages
+
+## [0.1.41] - 2025-11-1
+
+### Upgraded Packages
+
+### Added
+- New ProductionHTTPClient to have better http calls and retries

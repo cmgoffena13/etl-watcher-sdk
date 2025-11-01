@@ -25,7 +25,7 @@ def test_api_error_handling(watcher_client, sample_pipeline_config):
     )
 
     with patch.object(
-        watcher_client, "_make_request_with_retry", side_effect=http_error
+        watcher_client.client, "request_with_retry", side_effect=http_error
     ):
         with pytest.raises(WatcherAPIError) as exc_info:
             watcher_client.sync_pipeline_config(sample_pipeline_config)
@@ -42,7 +42,7 @@ def test_network_error_handling(watcher_client, sample_pipeline_config):
     network_error = httpx.ConnectError("Connection failed")
 
     with patch.object(
-        watcher_client, "_make_request_with_retry", side_effect=network_error
+        watcher_client.client, "request_with_retry", side_effect=network_error
     ):
         with pytest.raises(WatcherNetworkError) as exc_info:
             watcher_client.sync_pipeline_config(sample_pipeline_config)
@@ -67,7 +67,7 @@ def test_api_error_without_json_response(watcher_client, sample_pipeline_config)
     )
 
     with patch.object(
-        watcher_client, "_make_request_with_retry", side_effect=http_error
+        watcher_client.client, "request_with_retry", side_effect=http_error
     ):
         with pytest.raises(WatcherAPIError) as exc_info:
             watcher_client.sync_pipeline_config(sample_pipeline_config)
