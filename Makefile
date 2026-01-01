@@ -24,7 +24,7 @@ build:
 upload-to-test:
 	uv run -- twine upload --repository testpypi dist/*
 
-upload:
+upload: build
 	uv run -- twine upload dist/*
 
 docs:
