@@ -15,6 +15,7 @@ from watcher.models.execution import (
     ExecutionResult,
     WatcherContext,
     _EndPipelineExecutionInput,
+    _StartPipelineExecutionInput,
 )
 from watcher.models.pipeline import (
     PipelineConfig,
@@ -356,6 +357,55 @@ class Watcher:
                 json=error_payload.model_dump(mode="json", exclude_unset=True),
             )
             raise e
+
+    def create_pipeline_execution(
+        self,
+        pipeline_id: int,
+        start_date: Optional[DateTime] = None,
+        watermark: Optional[Union[str, int, DateTime, Date]] = None,
+        next_watermark: Optional[Union[str, int, DateTime, Date]] = None,
+        parent_execution_id: Optional[int] = None,
+    ):
+        execution_input = {
+            "pipeline_id": pipeline_id,
+            "start_date": start_date,
+            "watermark": watermark,
+            "next_watermark": next_watermark,
+            "parent_execution_id": parent_execution_id,
+        }
+        execution_input = _StartPipelineExecutionInput(**execution_input).model_dump(
+            mode="json", exclude_unset=True
+        )
+        execution_response = self._make_request(
+            "POST", "/start_pipeline_execution", json=execution_input
+        )
+        return execution_response.json()["id"]
+
+    def complete_pipeline_execution(
+        self,
+        execution_id: int,
+        completed_successfully: bool,
+        end_date: Optional[DateTime] = None,
+        inserts: Optional[int] = None,
+        updates: Optional[int] = None,
+        soft_deletes: Optional[int] = None,
+        total_rows: Optional[int] = None,
+        execution_metadata: Optional[dict] = None,
+    ):
+        end_execution = {
+            "id": execution_id,
+            "end_date": end_date,
+            "completed_successfully": completed_successfully,
+            "inserts": inserts,
+            "updates": updates,
+            "soft_deletes": soft_deletes,
+            "total_rows": total_rows,
+            "execution_metadata": execution_metadata,
+        }
+        end_execution = _EndPipelineExecutionInput(**end_execution).model_dump(
+            mode="json", exclude_unset=True
+        )
+        self._make_request("POST", "/end_pipeline_execution", json=end_execution)
 
     def trigger_timeliness_check(self, lookback_minutes: int):
         self._make_request(

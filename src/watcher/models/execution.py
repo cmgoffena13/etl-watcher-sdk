@@ -13,6 +13,14 @@ class ETLResult(BaseModel):
     execution_metadata: Optional[dict] = None
 
 
+class _StartPipelineExecutionInput(BaseModel):
+    pipeline_id: int
+    start_date: Optional[DateTime] = None
+    watermark: Optional[Union[str, int, DateTime, Date]] = None
+    next_watermark: Optional[Union[str, int, DateTime, Date]] = None
+    parent_execution_id: Optional[int] = None
+
+
 class _EndPipelineExecutionInput(BaseModel):
     id: int
     end_date: DateTime
