@@ -319,3 +319,133 @@ through the Watcher framework directly as the active flag is received from the W
 
 .. note::
     This can be a useful functionality to use in your pipelines to skip executions if needed.
+
+Manual Execution Management
+----------------------------
+
+For advanced use cases, especially when integrating with orchestration frameworks like Airflow or Dagster, you can manually manage execution lifecycle using the following methods:
+
+**start_pipeline_execution()**
+
+Starts a new pipeline execution and returns the execution ID. This is useful when you need to start an execution without using the decorator pattern.
+
+.. code-block:: python
+
+    from watcher import Watcher
+    import pendulum
+
+    watcher = Watcher("https://api.watcher.example.com")
+
+    # Start execution with minimal parameters
+    execution_id = watcher.start_pipeline_execution(pipeline_id=123)
+
+    # Start execution with all parameters
+    execution_id = watcher.start_pipeline_execution(
+        pipeline_id=123,
+        start_date=pendulum.now(),
+        watermark="2024-01-01",  # Associated with run, only metadata
+        next_watermark="2024-01-02",  # Associated with run, only metadata
+        parent_execution_id=456
+    )
+
+**Parameters:**
+
+- ``pipeline_id`` (int, required) - The ID of the pipeline to execute
+- ``start_date`` (DateTime, optional) - Start date for the execution
+- ``watermark`` (str | int | DateTime | Date, optional) - Watermark value for the execution
+- ``next_watermark`` (str | int | DateTime | Date, optional) - Next watermark value
+- ``parent_execution_id`` (int, optional) - ID of the parent execution for hierarchical tracking
+
+**Returns:**
+
+- ``int`` - The execution ID of the started execution
+
+**end_pipeline_execution()**
+
+Ends a pipeline execution with the provided metrics and status. This is useful when you need to manually end an execution that was started with ``start_pipeline_execution()``.
+
+.. code-block:: python
+
+    from watcher import Watcher
+    import pendulum
+
+    watcher = Watcher("https://api.watcher.example.com")
+
+    # End execution with minimal parameters
+    watcher.end_pipeline_execution(
+        execution_id=789,
+        completed_successfully=True
+    )
+
+    # End execution with all metrics
+    watcher.end_pipeline_execution(
+        execution_id=789,
+        completed_successfully=True,
+        end_date=pendulum.now(),
+        inserts=100,
+        updates=50,
+        soft_deletes=10,
+        total_rows=1000,
+        execution_metadata={"source": "database", "batch_id": "123"}
+    )
+
+    # Mark execution as failed
+    watcher.end_pipeline_execution(
+        execution_id=789,
+        completed_successfully=False,
+        execution_metadata={"error": "Data quality check failed"}
+    )
+
+**Parameters:**
+
+- ``execution_id`` (int, required) - The ID of the execution to end
+- ``completed_successfully`` (bool, required) - Whether the execution completed successfully
+- ``end_date`` (DateTime, optional) - End date for the execution
+- ``inserts`` (int, optional) - Number of rows inserted
+- ``updates`` (int, optional) - Number of rows updated
+- ``soft_deletes`` (int, optional) - Number of rows soft deleted
+- ``total_rows`` (int, optional) - Total number of rows processed
+- ``execution_metadata`` (dict, optional) - Additional metadata for the execution
+
+**update_pipeline_next_watermark()**
+
+Updates the next watermark for a pipeline. This is useful for manually updating watermarks outside of the normal execution flow.
+
+.. code-block:: python
+
+    from watcher import Watcher
+    import pendulum
+
+    watcher = Watcher("https://api.watcher.example.com")
+
+    # Update with string watermark
+    watcher.update_pipeline_next_watermark(
+        pipeline_id=123,
+        next_watermark="2024-01-02"
+    )
+
+    # Update with integer watermark
+    watcher.update_pipeline_next_watermark(
+        pipeline_id=123,
+        next_watermark=20240102
+    )
+
+    # Update with DateTime watermark
+    watcher.update_pipeline_next_watermark(
+        pipeline_id=123,
+        next_watermark="2024-01-02T10:00:00"
+    )
+
+**Parameters:**
+
+- ``pipeline_id`` (int, required) - The ID of the pipeline to update
+- ``next_watermark`` (str | int | DateTime | Date, required) - The new next watermark value
+
+**Use Cases:**
+
+These manual methods are particularly useful for:
+
+- **Orchestration Framework Integration**: When integrating with Airflow, Dagster, or other orchestration tools where you need fine-grained control over execution lifecycle
+- **Parent-Child Execution Tracking**: When managing parent executions that span multiple child tasks
+- **Custom Error Handling**: When you need custom error handling logic before completing an execution
+- **Watermark Management**: When you need to update watermarks after a pipeline runs rather than before

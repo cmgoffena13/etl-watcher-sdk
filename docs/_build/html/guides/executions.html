@@ -9,7 +9,7 @@
   <title>Execution Management &mdash; Watcher SDK 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c4a40db5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Monitoring" href="monitoring.html" />
-    <link rel="prev" title="Address Management" href="address_management.html" /> 
+    <link rel="prev" title="Authentication" href="authentication.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -88,6 +88,21 @@
 <li class="toctree-l2"><a class="reference internal" href="address_management.html#loading-address-lineage">Loading Address Lineage</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#supported-cloud-environments">Supported Cloud Environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#explicit-authentication-configuration">Explicit Authentication Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#cloud-specific-configuration">Cloud-Specific Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#installation-with-cloud-dependencies">Installation with Cloud Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#orchestration-integration">Orchestration Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#example-complete-cloud-deployment">Example: Complete Cloud Deployment</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Execution Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#logging-executions">Logging Executions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#exception-handling">Exception Handling</a></li>
@@ -100,12 +115,32 @@
 <li class="toctree-l2"><a class="reference internal" href="#hierarchical-executions">Hierarchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#active-flag">Active Flag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-execution-management">Manual Execution Management</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="orchestration.html">Orchestration Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#dagster-integration">Dagster Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#airflow-integration">Airflow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#watermark-management">Watermark Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#context-detection">Context Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#metadata-injection">Metadata Injection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#example-complete-dagster-pipeline-with-parent-execution-tracking">Example: Complete Dagster Pipeline with Parent Execution Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#example-complete-airflow-dag-with-parent-execution-tracking">Example: Complete Airflow DAG with Parent Execution Tracking</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
@@ -442,13 +477,132 @@ through the Watcher framework directly as the active flag is received from the W
 <p>This can be a useful functionality to use in your pipelines to skip executions if needed.</p>
 </div>
 </section>
+<section id="manual-execution-management">
+<h2>Manual Execution Management<a class="headerlink" href="#manual-execution-management" title="Link to this heading"></a></h2>
+<p>For advanced use cases, especially when integrating with orchestration frameworks like Airflow or Dagster, you can manually manage execution lifecycle using the following methods:</p>
+<p><strong>start_pipeline_execution()</strong></p>
+<p>Starts a new pipeline execution and returns the execution ID. This is useful when you need to start an execution without using the decorator pattern.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
+
+<span class="c1"># Start execution with minimal parameters</span>
+<span class="n">execution_id</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">start_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="c1"># Start execution with all parameters</span>
+<span class="n">execution_id</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">start_pipeline_execution</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">start_date</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+    <span class="n">watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>  <span class="c1"># Associated with run, only metadata</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-02&quot;</span><span class="p">,</span>  <span class="c1"># Associated with run, only metadata</span>
+    <span class="n">parent_execution_id</span><span class="o">=</span><span class="mi">456</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int, required) - The ID of the pipeline to execute</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (DateTime, optional) - Start date for the execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (str | int | DateTime | Date, optional) - Watermark value for the execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (str | int | DateTime | Date, optional) - Next watermark value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_execution_id</span></code> (int, optional) - ID of the parent execution for hierarchical tracking</p></li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code> - The execution ID of the started execution</p></li>
+</ul>
+<p><strong>end_pipeline_execution()</strong></p>
+<p>Ends a pipeline execution with the provided metrics and status. This is useful when you need to manually end an execution that was started with <code class="docutils literal notranslate"><span class="pre">start_pipeline_execution()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
+
+<span class="c1"># End execution with minimal parameters</span>
+<span class="n">watcher</span><span class="o">.</span><span class="n">end_pipeline_execution</span><span class="p">(</span>
+    <span class="n">execution_id</span><span class="o">=</span><span class="mi">789</span><span class="p">,</span>
+    <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># End execution with all metrics</span>
+<span class="n">watcher</span><span class="o">.</span><span class="n">end_pipeline_execution</span><span class="p">(</span>
+    <span class="n">execution_id</span><span class="o">=</span><span class="mi">789</span><span class="p">,</span>
+    <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">end_date</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+    <span class="n">inserts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">updates</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">soft_deletes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">total_rows</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">,</span> <span class="s2">&quot;batch_id&quot;</span><span class="p">:</span> <span class="s2">&quot;123&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Mark execution as failed</span>
+<span class="n">watcher</span><span class="o">.</span><span class="n">end_pipeline_execution</span><span class="p">(</span>
+    <span class="n">execution_id</span><span class="o">=</span><span class="mi">789</span><span class="p">,</span>
+    <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">execution_metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Data quality check failed&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int, required) - The ID of the execution to end</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">completed_successfully</span></code> (bool, required) - Whether the execution completed successfully</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (DateTime, optional) - End date for the execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inserts</span></code> (int, optional) - Number of rows inserted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updates</span></code> (int, optional) - Number of rows updated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">soft_deletes</span></code> (int, optional) - Number of rows soft deleted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_rows</span></code> (int, optional) - Total number of rows processed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_metadata</span></code> (dict, optional) - Additional metadata for the execution</p></li>
+</ul>
+<p><strong>update_pipeline_next_watermark()</strong></p>
+<p>Updates the next watermark for a pipeline. This is useful for manually updating watermarks outside of the normal execution flow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;https://api.watcher.example.com&quot;</span><span class="p">)</span>
+
+<span class="c1"># Update with string watermark</span>
+<span class="n">watcher</span><span class="o">.</span><span class="n">update_pipeline_next_watermark</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-02&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Update with integer watermark</span>
+<span class="n">watcher</span><span class="o">.</span><span class="n">update_pipeline_next_watermark</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="mi">20240102</span>
+<span class="p">)</span>
+
+<span class="c1"># Update with DateTime watermark</span>
+<span class="n">watcher</span><span class="o">.</span><span class="n">update_pipeline_next_watermark</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="s2">&quot;2024-01-02T10:00:00&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int, required) - The ID of the pipeline to update</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (str | int | DateTime | Date, required) - The new next watermark value</p></li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<p>These manual methods are particularly useful for:</p>
+<ul class="simple">
+<li><p><strong>Orchestration Framework Integration</strong>: When integrating with Airflow, Dagster, or other orchestration tools where you need fine-grained control over execution lifecycle</p></li>
+<li><p><strong>Parent-Child Execution Tracking</strong>: When managing parent executions that span multiple child tasks</p></li>
+<li><p><strong>Custom Error Handling</strong>: When you need custom error handling logic before completing an execution</p></li>
+<li><p><strong>Watermark Management</strong>: When you need to update watermarks after a pipeline runs rather than before</p></li>
+</ul>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="address_management.html" class="btn btn-neutral float-left" title="Address Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="authentication.html" class="btn btn-neutral float-left" title="Authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="monitoring.html" class="btn btn-neutral float-right" title="Monitoring" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

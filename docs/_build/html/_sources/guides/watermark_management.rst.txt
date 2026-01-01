@@ -49,7 +49,10 @@ to your Pipeline Config before syncing with the Watcher framework.
     print(f"Pipeline synced! New Watermark: {synced_config.watermark}")
 
 
-For the first run, the watermark will be the default watermark. Then, it will be the next watermark.
+For the first run, the watermark will be the default watermark. Then, it will be the next watermark. 
+If you cannot set the next watermark before your pipeline execution, 
+you can update the next_watermark value once you have it within your pipeline run using the 
+``update_pipeline_next_watermark()`` method.  
 
 .. note::
     It is important to be aware of inclusivity / exlusivity to make sure your incremental windows do not overlap.

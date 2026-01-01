@@ -358,7 +358,7 @@ class Watcher:
             )
             raise e
 
-    def create_pipeline_execution(
+    def start_pipeline_execution(
         self,
         pipeline_id: int,
         start_date: Optional[DateTime] = None,
@@ -381,7 +381,7 @@ class Watcher:
         )
         return execution_response.json()["id"]
 
-    def complete_pipeline_execution(
+    def end_pipeline_execution(
         self,
         execution_id: int,
         completed_successfully: bool,
@@ -406,6 +406,15 @@ class Watcher:
             mode="json", exclude_unset=True
         )
         self._make_request("POST", "/end_pipeline_execution", json=end_execution)
+
+    def update_pipeline_next_watermark(
+        self, pipeline_id: int, next_watermark: Union[str, int, DateTime, Date]
+    ):
+        next_watermark_input = {
+            "pipeline_id": pipeline_id,
+            "next_watermark": next_watermark,
+        }
+        self._make_request("PATCH", "/pipeline", json=next_watermark_input)
 
     def trigger_timeliness_check(self, lookback_minutes: int):
         self._make_request(

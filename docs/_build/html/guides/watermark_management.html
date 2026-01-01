@@ -9,7 +9,7 @@
   <title>Watermark Management &mdash; Watcher SDK 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c4a40db5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Monitoring" href="monitoring.html" /> 
+    <link rel="prev" title="Orchestration Integration" href="orchestration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -87,6 +87,21 @@
 <li class="toctree-l2"><a class="reference internal" href="address_management.html#loading-address-lineage">Loading Address Lineage</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#supported-cloud-environments">Supported Cloud Environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#explicit-authentication-configuration">Explicit Authentication Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#cloud-specific-configuration">Cloud-Specific Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#installation-with-cloud-dependencies">Installation with Cloud Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#orchestration-integration">Orchestration Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#common-issues">Common Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#example-complete-cloud-deployment">Example: Complete Cloud Deployment</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="executions.html">Execution Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#logging-executions">Logging Executions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="executions.html#exception-handling">Exception Handling</a></li>
@@ -99,12 +114,32 @@
 <li class="toctree-l2"><a class="reference internal" href="executions.html#hierarchical-executions">Hierarchical Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#watcher-execution-context">Watcher Execution Context</a></li>
 <li class="toctree-l2"><a class="reference internal" href="executions.html#active-flag">Active Flag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="executions.html#manual-execution-management">Manual Execution Management</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-timeliness-check">Trigger Timeliness Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-freshness-check">Trigger Freshness Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#trigger-celery-queue-check">Trigger Celery Queue Check</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="orchestration.html">Orchestration Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#dagster-integration">Dagster Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#airflow-integration">Airflow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#watermark-management">Watermark Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#context-detection">Context Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#metadata-injection">Metadata Injection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orchestration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#example-complete-dagster-pipeline-with-parent-execution-tracking">Example: Complete Dagster Pipeline with Parent Execution Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orchestration.html#example-complete-airflow-dag-with-parent-execution-tracking">Example: Complete Airflow DAG with Parent Execution Tracking</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Watermark Management</a><ul>
@@ -182,7 +217,10 @@ to your Pipeline Config before syncing with the Watcher framework.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline synced! New Watermark: </span><span class="si">{</span><span class="n">synced_config</span><span class="o">.</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For the first run, the watermark will be the default watermark. Then, it will be the next watermark.</p>
+<p>For the first run, the watermark will be the default watermark. Then, it will be the next watermark.
+If you cannot set the next watermark before your pipeline execution,
+you can update the next_watermark value once you have it within your pipeline run using the
+<code class="docutils literal notranslate"><span class="pre">update_pipeline_next_watermark()</span></code> method.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>It is important to be aware of inclusivity / exlusivity to make sure your incremental windows do not overlap.</p>
@@ -240,7 +278,7 @@ and to properly cast it once accessed from the WatcherContext.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="monitoring.html" class="btn btn-neutral float-left" title="Monitoring" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="orchestration.html" class="btn btn-neutral float-left" title="Orchestration Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
