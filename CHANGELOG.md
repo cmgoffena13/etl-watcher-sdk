@@ -93,3 +93,8 @@ Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 
 ### Added
 - New ProductionHTTPClient to have better http calls and retries
+
+## [0.1.42] - 2026-01-01
+
+### Added
+ - `start_process_execution` , `end_process_execution` , and `update_pipeline_next_watermark` methods to client
